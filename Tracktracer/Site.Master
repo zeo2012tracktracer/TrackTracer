@@ -1,0 +1,49 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Tracktracer.SiteMaster" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+    <title></title>
+    <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form runat="server">
+    <div class="page">
+        <div class="header">
+            <div class="title">
+                <a href="Default.aspx">
+                    <asp:Image ID="Image1" runat="server" ImageUrl="~/Graphics/log.jpg" />
+                </a>
+            </div>
+            <div class="loginDisplay">
+                <asp:LinkButton ID="LinkButton1" runat="server" onclick="LinkButton1_Click">Wyloguj</asp:LinkButton>
+            </div>
+            <div class="clear hideSkiplink">
+                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
+                    EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal" 
+                    onmenuitemclick="NavigationMenu_MenuItemClick" >
+                    <Items>
+                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Projekty"/>
+                        <asp:MenuItem Text="Aktywny projekt" Value="Projekt"></asp:MenuItem>
+                        <asp:MenuItem Text="Aktualnie realizowane" Value="Realizacje"></asp:MenuItem>
+                        <asp:MenuItem NavigateUrl="~/Administracja.aspx" Text="Zarządzaj"/>
+                        <asp:MenuItem NavigateUrl="~/OSystemie.aspx" Text="O systemie" 
+                            Value="O systemie"></asp:MenuItem>
+                    </Items>
+                </asp:Menu>
+            </div>
+        </div>
+        <div class="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="footer">
+        
+    </div>
+    </form>
+</body>
+</html>

@@ -14,7 +14,6 @@ namespace Tracktracer
 
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,7 +21,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
             }
             catch 
             {
@@ -44,15 +42,9 @@ namespace Tracktracer
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "UPDATE Uzytkownicy SET haslo='" + haslo + "' WHERE id='" + user_id + "';";
             
-            SqlCommand zapytanie2 = new SqlCommand();
-            zapytanie2.Connection = conn2;
-            zapytanie2.CommandType = CommandType.Text;
-            zapytanie2.CommandText = "UPDATE pracownicy SET haslo='" + haslo + "' WHERE id='" + user_id + "'";
-            
             try
             {
                 zapytanie.ExecuteNonQuery();
-                zapytanie2.ExecuteNonQuery();
             }
             catch { }
             Server.Transfer("Administracja.aspx");

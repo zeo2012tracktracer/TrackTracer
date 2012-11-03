@@ -13,7 +13,6 @@ namespace Tracktracer
     {
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private int projekt_id;
         private string nazwa;
         private string nazwa_wymagania;
@@ -33,7 +32,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
                 projekt_id = (int)Session["projekt_id"];
                 nazwa = (string)Session["nazwa"];
                 wymaganie_id = (string)Session["wymaganie_id"];
@@ -335,20 +333,6 @@ namespace Tracktracer
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "UPDATE Wymagania SET status = 'usunięte', nr_wydania = NULL, nr_iteracji = NULL, Iteracje_id = NULL, Uzytkownik_id = NULL WHERE id = '" + wymaganie_id + "'";
 
-            SqlCommand zapytanie2 = new SqlCommand();
-            zapytanie2.Connection = conn2;
-            zapytanie2.CommandType = CommandType.Text;
-            zapytanie2.CommandText = "DELETE FROM historiawymagan WHERE id = '" + wymaganie_id + "'";
-            try
-            {
-                zapytanie.ExecuteNonQuery();
-                zapytanie2.ExecuteNonQuery();
-                zapytanie2.CommandText = "DELETE FROM wymagania WHERE id = '" + wymaganie_id + "'";
-                zapytanie2.ExecuteNonQuery();
-                status = "usunięte";
-            }
-            catch { }
-
             brak_przypisania_Label.Visible = true;
             wydanie_Label.Visible = false;
             iteracja_Label.Visible = false;
@@ -394,23 +378,6 @@ namespace Tracktracer
             {
                 zapytanie.ExecuteNonQuery();
 
-                if (operacja.CompareTo("aktywne") == 0 && status.CompareTo("do weryfikacji") != 0)
-                {
-                    SqlCommand zapytanie2 = new SqlCommand();
-                    zapytanie2.Connection = conn2;
-                    zapytanie2.CommandType = CommandType.Text;
-                    string sql2 = "SET IDENTITY_INSERT wymagania ON;";
-                    sql2 += "INSERT INTO wymagania (id, FK_id_projektu, FK_id_nadrzednego_wymagania) VALUES ('" + wymaganie_id + "', '" + projekt_id + "', NULL);";
-                    sql2 += "SET IDENTITY_INSERT wymagania OFF;";
-                    zapytanie2.CommandText = sql2;
-                    zapytanie2.ExecuteNonQuery();
-
-                    sql2 = "SET IDENTITY_INSERT historiawymagan ON;";
-                    sql2 += "INSERT INTO historiawymagan (id, nazwa, opis, zrodlo, priorytet, status, FK_id_wymagania, FK_id_pracownika) VALUES ('" + wymaganie_id + "', '" + nazwa_wymagania + "', '" + opis1 + "', '" + udzialowcy1 + "', 'Normalny', 'Aktywne','" + wymaganie_id + "', '" + user_id + "');";
-                    sql2 += "SET IDENTITY_INSERT historiawymagan OFF;";
-                    zapytanie2.CommandText = sql2;
-                    zapytanie2.ExecuteNonQuery();
-                }
                 status = operacja;
                 DropDownList1.Items[2].Enabled = false;
                 status_Button.Visible = false;
@@ -486,11 +453,7 @@ namespace Tracktracer
                         zapytanie.CommandType = CommandType.Text;
                         zapytanie.CommandText = "INSERT INTO Wersje_wymagan (Wymaganie_id, opis, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + wymaganie_id + "', '" + opis + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";
 
-                        SqlCommand zapytanie2 = new SqlCommand();
-                        zapytanie2.Connection = conn2;
-                        zapytanie2.CommandType = CommandType.Text;
-                        zapytanie2.CommandText = "UPDATE historiawymagan SET opis='" + opis + "', data_modyfikacji=GETDATE(), zrodlo='" + udzialowcy + "' WHERE id='" + wymaganie_id + "'";
-
+                        
                         zapytanie.ExecuteNonQuery();
                         zapytanie.CommandText = "UPDATE Wymagania SET wersja = wersja + 1 WHERE id = '" + wymaganie_id + "'";
                         zapytanie.ExecuteNonQuery();

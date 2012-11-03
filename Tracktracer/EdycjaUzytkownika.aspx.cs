@@ -14,7 +14,6 @@ namespace Tracktracer
         private int user_id;
         private string mod_user;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private string mod_imie;
         private string mod_nazwisko;
         private string mod_status;
@@ -27,7 +26,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
                 mod_user = (string)Session["mod_user"];
                 mod_imie = (string)Session["mod_imie"];
                 mod_nazwisko = (string)Session["mod_nazwisko"];
@@ -121,41 +119,15 @@ namespace Tracktracer
         {
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
-            zapytanie.CommandType = CommandType.Text;
-
-            string sql2;
-            SqlCommand zapytanie2 = new SqlCommand();
-            zapytanie2.Connection = conn2;
-            zapytanie2.CommandType = CommandType.Text;            
+            zapytanie.CommandType = CommandType.Text;           
 
 
             if (mod_status.CompareTo("aktywne") == 0)
             {
                 zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='zablokowane' WHERE login='" + mod_user + "';";
-                zapytanie2.CommandText = "DELETE FROM pracownicy WHERE login='" + mod_user + "'";
             }
             else
             {
-                zapytanie.CommandText = "SELECT id, imie, nazwisko, haslo FROM Uzytkownicy WHERE login='" + mod_user + "'";
-                SqlDataReader reader = zapytanie.ExecuteReader();
-                try
-                {
-                    reader.Read();
-                    mod_id = reader.GetInt32(0).ToString();
-                    mod_imie = reader.GetString(1);
-                    mod_nazwisko = reader.GetString(2);
-                    mod_haslo = reader.GetString(3);
-                    reader.Close();
-                }
-                catch 
-                {
-                    reader.Dispose();
-                }
-
-                sql2 = "SET IDENTITY_INSERT pracownicy ON;";
-                sql2 += "INSERT INTO pracownicy (id, imie, nazwisko, login, haslo) VALUES (" + mod_id + ", '" + mod_imie + "', '" + mod_nazwisko + "', '" + mod_user + "', '" + mod_haslo + "');";
-                sql2 += "SET IDENTITY_INSERT pracownicy OFF;";
-                zapytanie2.CommandText = sql2;
 
                 zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='aktywne' WHERE login='" + mod_user + "';";
             }
@@ -163,7 +135,6 @@ namespace Tracktracer
             try
             {
                 zapytanie.ExecuteNonQuery();
-                zapytanie2.ExecuteNonQuery();
                 
                 if (mod_status.CompareTo("aktywne") == 0)
                 {

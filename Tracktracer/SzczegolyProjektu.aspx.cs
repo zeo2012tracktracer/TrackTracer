@@ -13,7 +13,6 @@ namespace Tracktracer
     {
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private int wlasciciel;
         private int projekt_id;
         private string metodyka;
@@ -24,7 +23,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
             }
             catch
             {
@@ -340,16 +338,6 @@ namespace Tracktracer
 
             try
             {                
-                SqlCommand zapytanie2 = new SqlCommand();
-                zapytanie2.Connection = conn2;                
-                zapytanie2.CommandType = CommandType.Text;
-
-                zapytanie2.CommandText = "DELETE FROM tracktracer.dbo.historiawymagan WHERE tracktracer.dbo.historiawymagan.FK_id_wymagania IN (SELECT test5.dbo.Wymagania.id FROM test5.dbo.Wymagania WHERE test5.dbo.Wymagania.Projekty_id='" + projekt_id + "')";
-                zapytanie2.ExecuteNonQuery();
-                zapytanie2.CommandText = "DELETE FROM tracktracer.dbo.wymagania WHERE tracktracer.dbo.wymagania.id IN (SELECT test5.dbo.Wymagania.id FROM test5.dbo.Wymagania WHERE test5.dbo.Wymagania.Projekty_id='" + projekt_id + "')";
-                zapytanie2.ExecuteNonQuery();
-                zapytanie2.CommandText = "DELETE FROM projekty WHERE id='" + projekt_id + "'";
-                zapytanie2.ExecuteNonQuery();
                 
                 SqlCommand zap = new SqlCommand();
                 zap.Connection = conn;

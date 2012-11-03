@@ -13,7 +13,6 @@ namespace Tracktracer
     {
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private int projekt_id;
         private string nazwa;
         private string tresc1;        
@@ -31,7 +30,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
                 projekt_id = (int)Session["projekt_id"];
                 nazwa = (string)Session["nazwa"];
                 zadanie_id = (string)Session["zadanie_id"];
@@ -179,33 +177,7 @@ namespace Tracktracer
                 if (operacja.CompareTo("Aktywne") == 0 && status.CompareTo("Usunięte") == 0)
                 {
                     zapytanie.CommandText = "SELECT wh.udzialowcy FROM Wersje_historyjek wh WHERE wh.Historyjka_uzytkownika_id='" + historyjka_id + "'";
-                    string udzialowcy = (string)zapytanie.ExecuteScalar();
-
-                    SqlCommand zapytanie2 = new SqlCommand();
-                    zapytanie2.Connection = conn2;
-                    zapytanie2.CommandType = CommandType.Text;
-                    string sql2 = "SET IDENTITY_INSERT wymagania ON;";
-                    sql2 += "INSERT INTO wymagania (id, FK_id_projektu, FK_id_nadrzednego_wymagania) VALUES ('" + zadanie_id + "', '" + projekt_id + "', NULL);";
-                    sql2 += "SET IDENTITY_INSERT wymagania OFF;";
-                    zapytanie2.CommandText = sql2;
-                    zapytanie2.ExecuteNonQuery();
-
-                    sql2 = "SET IDENTITY_INSERT historiawymagan ON;";
-                    sql2 += "INSERT INTO historiawymagan (id, nazwa, opis, zrodlo, priorytet, status, FK_id_wymagania, FK_id_pracownika) VALUES ('" + zadanie_id + "', '" + zadNazwa_Label.Text + "', '" + tresc1 + "', '" + udzialowcy + "', 'Normalny', 'Aktywne','" + zadanie_id + "', '" + user_id + "');";
-                    sql2 += "SET IDENTITY_INSERT historiawymagan OFF;";
-                    zapytanie2.CommandText = sql2;
-                    zapytanie2.ExecuteNonQuery();
-                }
-                else if (operacja.CompareTo("Usunięte") == 0)
-                {                    
-                    SqlCommand zapytanie2 = new SqlCommand();
-                    zapytanie2.Connection = conn2;
-                    zapytanie2.CommandType = CommandType.Text;
-                    zapytanie2.CommandText = "DELETE FROM historiawymagan WHERE id = '" + zadanie_id + "'";
-                    zapytanie2.ExecuteNonQuery();
-
-                    zapytanie2.CommandText = "DELETE FROM wymagania WHERE id = '" + zadanie_id + "'";
-                    zapytanie2.ExecuteNonQuery();
+                      
                 }
                 status = operacja;
                 DropDownList1.Items[2].Enabled = false;
@@ -266,13 +238,7 @@ namespace Tracktracer
                         zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id = '" + zadanie_id + "'";
                         zapytanie.ExecuteNonQuery();
 
-                        // Aktualizacja bazy pluginu
-                        SqlCommand zapytanie2 = new SqlCommand();
-                        zapytanie2.Connection = conn2;
-                        zapytanie2.CommandType = CommandType.Text;
-                        zapytanie2.CommandText = "UPDATE historiawymagan SET opis='" + tresc + "', data_modyfikacji=GETDATE() WHERE id='" + zadanie_id + "'";
-                        zapytanie2.ExecuteNonQuery();
-
+                        
                         zaladuj_wersje_DropDownList();
                         GridView5.DataBind();
                     }
@@ -436,21 +402,12 @@ namespace Tracktracer
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status = 'Usunięte', Realizator1_id = NULL, Realizator2_id = NULL WHERE id = '" + zadanie_id + "'";
-
-            SqlCommand zapytanie2 = new SqlCommand();
-            zapytanie2.Connection = conn2;
-            zapytanie2.CommandType = CommandType.Text;
-            zapytanie2.CommandText = "DELETE FROM historiawymagan WHERE id = '" + zadanie_id + "'";
             try
             {
                 zapytanie.ExecuteNonQuery();
 
                 zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id = '" + zadanie_id + "'";
                 zapytanie.ExecuteNonQuery();
-
-                zapytanie2.ExecuteNonQuery();
-                zapytanie2.CommandText = "DELETE FROM wymagania WHERE id = '" + zadanie_id + "'";
-                zapytanie2.ExecuteNonQuery();
                 status = "Usunięte";
             }
             catch { }

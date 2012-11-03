@@ -13,7 +13,6 @@ namespace Tracktracer
     {
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private int akt_rewizja;
         private int projekt_id;
         private int historyjka_id;
@@ -26,7 +25,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
                 projekt_id = (int)Session["projekt_id"];
                 historyjka_id = (int)Session["historyjka_id"];
             }
@@ -94,25 +92,7 @@ namespace Tracktracer
                     zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (tresc_Zadania, nr_rewizji, Zadanie_programistyczne_id, Uzytkownik_id) VALUES ('" + tresc + "', '" + akt_rewizja + "', '" + zad_id + "', '" + user_id + "');";
                     zapytanie.ExecuteNonQuery();
 
-                    // Dodanie wpisów do bazy danych pluginu
-                    SqlCommand zapytanie2 = new SqlCommand();
-                    zapytanie2.Connection = conn2;
-                    zapytanie2.CommandType = CommandType.Text;
-                    try
-                    {
-                        string sql2 = "SET IDENTITY_INSERT wymagania ON;";
-                        sql2 += "INSERT INTO wymagania (id, FK_id_projektu, FK_id_nadrzednego_wymagania) VALUES ('" + zad_id + "', '" + projekt_id + "', NULL);";
-                        sql2 += "SET IDENTITY_INSERT wymagania OFF;";
-                        zapytanie2.CommandText = sql2;
-                        zapytanie2.ExecuteNonQuery();
-
-                        sql2 = "SET IDENTITY_INSERT historiawymagan ON;";
-                        sql2 += "INSERT INTO historiawymagan (id, nazwa, opis, zrodlo, priorytet, status, FK_id_wymagania, FK_id_pracownika) VALUES ('" + zad_id + "', '" + nazwa_zadania + "', '" + tresc + "', '" + udzialowcy + "', 'Normalny', 'Aktywne','" + zad_id + "', '" + user_id + "');";
-                        sql2 += "SET IDENTITY_INSERT historiawymagan OFF;";
-                        zapytanie2.CommandText = sql2;
-                        zapytanie2.ExecuteNonQuery();
-                    }
-                    catch { }
+                    
 
                     trans.Commit();
                     info_Label.Text = "Dodano zadanie";

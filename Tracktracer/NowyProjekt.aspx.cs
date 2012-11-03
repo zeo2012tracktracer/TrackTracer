@@ -14,7 +14,6 @@ namespace Tracktracer
         private int aktywny_projekt = 0;
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,7 +21,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
             }
             catch
             {
@@ -51,11 +49,7 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();            
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "INSERT INTO Projekty (nazwa, opis, metodyka, wlasciciel) VALUES ('" + nazwa + "', '" + opis + "', '" + metodyka + "', '" + user_id + "');";
-
-            SqlCommand zapytanie2 = new SqlCommand();
-            zapytanie2.Connection = conn2;
-            zapytanie2.CommandType = CommandType.Text;            
+            zapytanie.CommandText = "INSERT INTO Projekty (nazwa, opis, metodyka, wlasciciel) VALUES ('" + nazwa + "', '" + opis + "', '" + metodyka + "', '" + user_id + "');";           
             
             try
             {
@@ -66,12 +60,6 @@ namespace Tracktracer
                 reader.Read();
                 int proj_id = reader.GetInt32(0);
                 reader.Close();
-
-                string sql2 = "SET IDENTITY_INSERT projekty ON;";
-                sql2 += "INSERT INTO projekty (id, nazwa, opis) VALUES ('" + proj_id + "','" + nazwa + "', '" + opis + "');";
-                sql2 += "SET IDENTITY_INSERT projekty OFF;";
-                zapytanie2.CommandText = sql2;
-                zapytanie2.ExecuteNonQuery();
 
                 zapytanie.CommandText = "INSERT INTO Uzytkownicy_Projekty (Uzytkownik_id, Projekt_id) VALUES ('" + user_id + "', '" + proj_id + "');";
                 zapytanie.ExecuteNonQuery();                 

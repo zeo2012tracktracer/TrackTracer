@@ -32,14 +32,9 @@ namespace Tracktracer
         protected void zaloguj(String login, String haslo)
         {
             SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = "Data Source=SATELLITE;Initial Catalog=test5;Persist Security Info=True; User ID=user1; Password=u$er%!";
+            conn.ConnectionString = "Data Source=.;Initial Catalog=tracktracer;User ID=user1;Password=zeo2012;Integrated Security=True";
             //conn.ConnectionString = "Data Source=SATELLITE;Initial Catalog=test5;Integrated Security=True";
             conn.Open();
-
-            SqlConnection conn2 = new SqlConnection();
-            conn2.ConnectionString = "Data Source=SATELLITE;Initial Catalog=tracktracer;Persist Security Info=True; User ID=user1; Password=u$er%!";
-            //conn2.ConnectionString = "Data Source=SATELLITE;Initial Catalog=tracktracer;Integrated Security=True";
-            conn2.Open();
 
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
@@ -54,7 +49,6 @@ namespace Tracktracer
                               
                 Session["user_id"] = user_id;
                 Session["connection"] = conn;
-                Session["connection2"] = conn2;
 
                 if (!reader.IsDBNull(1))
                 {

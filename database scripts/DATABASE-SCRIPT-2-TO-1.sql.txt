@@ -1,0 +1,6 @@
+USE master
+GO
+DROP DATABASE tracktracer
+GO
+ALTER DATABASE test5 MODIFY NAME = tracktracer
+GO

@@ -13,7 +13,6 @@ namespace Tracktracer
     {
         private int user_id;
         private SqlConnection conn;
-        private SqlConnection conn2;
         private int projekt_id;
         private string nazwa;
         private int historyjka_id;
@@ -32,7 +31,6 @@ namespace Tracktracer
             {
                 user_id = (int)Session["user_id"];
                 conn = (SqlConnection)Session["connection"];
-                conn2 = (SqlConnection)Session["connection2"];
                 projekt_id = (int)Session["projekt_id"];
                 nazwa = (string)Session["nazwa"];
                 historyjka_id = (int)Session["historyjka_id"];
@@ -228,8 +226,6 @@ namespace Tracktracer
                         zapytanie.CommandText = "INSERT INTO Wersje_historyjek (Historyjka_uzytkownika_id, tresc, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + historyjka_id + "', '" + tresc + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";
                         zapytanie.ExecuteNonQuery();
 
-                        aktualizuj_udzialowcow_plugin(udzialowcy);
-
                         zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status='Do weryfikacji' WHERE Historyjka_uzytkownika_id='" + historyjka_id + "';";
                         zapytanie.ExecuteNonQuery();
 
@@ -242,39 +238,6 @@ namespace Tracktracer
                     catch { }
                 }
             }
-        }
-
-        // Aktualizacja udziałowców (źródeł wymagań) w bazie pluginu.
-        protected void aktualizuj_udzialowcow_plugin(string udzialowcy)
-        {
-            List<int> lista_wym = new List<int>();
-            SqlCommand zapytanie = new SqlCommand();
-            zapytanie.Connection = conn;
-            zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT id FROM Wersje_historyjek WHERE Historyjka_uzytkownika_id = '" + historyjka_id + "' ";
-            SqlDataReader reader = zapytanie.ExecuteReader();
-            try
-            {
-                while (reader.Read())
-                {
-                    lista_wym.Add(reader.GetInt32(0));
-                }
-                reader.Close();
-
-                SqlCommand zapytanie2 = new SqlCommand();
-                zapytanie2.Connection = conn2;
-                zapytanie2.CommandType = CommandType.Text;
-
-                foreach (int i in lista_wym)
-                {
-                    zapytanie2.CommandText = "UPDATE historiawymagan SET zrodlo='" + udzialowcy + "', data_modyfikacji=GETDATE() WHERE id='" + i + "'";
-                    zapytanie2.ExecuteNonQuery();
-                }
-            }
-            catch 
-            {
-                reader.Dispose();
-            }            
         }
 
         // Powrót do poprzedniej strony

@@ -29,7 +29,7 @@
             <ItemStyle HorizontalAlign="Center" Width="40px" />
             </asp:BoundField>
             <asp:TemplateField HeaderText="Nazwa wymagania" SortExpression="nazwa">
-                <HeaderStyle HorizontalAlign="Left" Width="700px" />
+                <HeaderStyle HorizontalAlign="Left" Width="600px" />
                 <ItemStyle HorizontalAlign="Left" />
                     <ItemTemplate>
                         <asp:LinkButton ID="wymLink" CommandName="Wymaganie" CommandArgument='<%#Eval("id") %>' runat="server">                                        
@@ -37,15 +37,9 @@
                         </asp:LinkButton>                        
                     </ItemTemplate>
             </asp:TemplateField>            
-            <asp:BoundField DataField="nr_wydania" HeaderText="Wydanie" 
-                SortExpression="nr_wydania" >
+           <asp:BoundField DataField="[Wydanie].[Iteracja]" HeaderText="Wydania.Iteracja" >
             <HeaderStyle HorizontalAlign="Center" />
-            <ItemStyle HorizontalAlign="Center" Width="60px" />
-            </asp:BoundField>
-            <asp:BoundField DataField="nr_iteracji" HeaderText="Iteracja" 
-                SortExpression="nr_iteracji" >
-            <HeaderStyle HorizontalAlign="Center" />
-            <ItemStyle HorizontalAlign="Center" Width="60px" />
+            <ItemStyle HorizontalAlign="Center" Width="220px" />
             </asp:BoundField>
         </Columns>
         <EditRowStyle BackColor="#2461BF" />
@@ -65,7 +59,7 @@
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
         ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
                                
-        SelectCommand="SELECT w.id, w.nazwa, w.nr_wydania, w.nr_iteracji FROM Wymagania w WHERE w.Projekty_id = @proj_id AND w.status != 'usunięte';">
+        SelectCommand="SELECT w.id, w.nazwa, STUFF((SELECT ',  ' +convert(VARCHAR,wd.nr_wydania)+'.'+convert(VARCHAR,i.nr_iteracji) FROM  Iteracje_Wymagania iw, Iteracje i, Wydania wd WHERE iw.WymaganieId=w.id and i.id=iw.IteracjaId and wd.id = i.Wydania_id FOR XML PATH ('')) , 1, 1, '') AS '[Wydanie].[Iteracja]'  FROM Wymagania w WHERE w.Projekty_id = @proj_id AND w.status != 'usunięte';">
         <SelectParameters>
             <asp:SessionParameter Name="proj_id" SessionField="projekt_id" />
         </SelectParameters>
@@ -114,7 +108,11 @@
         Text="Przypisz zaznaczone wymagania do wybranej iteracji" Width="350px" />
     <br />
     <br />
+     <asp:Button ID="usun_Button" runat="server" onclick="usun_Button_Click" 
+        Text="Usun zaznaczone wymagania do wybranej iteracji" Width="350px" />
     <br />
+    <br />
+    <br />    
         <asp:Label ID="moje_Label" runat="server" Text="Moje wymagania: "></asp:Label>
     <br />
     <br />

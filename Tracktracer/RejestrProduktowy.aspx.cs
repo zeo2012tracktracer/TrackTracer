@@ -12,7 +12,7 @@ namespace Tracktracer
     public partial class RejestrProduktowy : System.Web.UI.Page
     {
         private int user_id;
-        private SqlConnection conn;        
+        private SqlConnection conn;
         private int projekt_id;
         private string nazwa;
         List<string> zaznaczone_id;
@@ -49,17 +49,16 @@ namespace Tracktracer
             Session["powroty"] = powroty;
             Session["powroty_id"] = powroty_id;
 
-            nazwa_Label.Text = nazwa;            
+            nazwa_Label.Text = nazwa;
             zaznaczone_id = new List<string>();
 
-            if (usuniete_CheckBox.Checked) SqlDataSource1.SelectCommand = "SELECT w.id, w.nazwa, w.nr_wydania, w.nr_iteracji FROM Wymagania w WHERE w.Projekty_id = @proj_id;";
-            else SqlDataSource1.SelectCommand = "SELECT w.id, w.nazwa, w.nr_wydania, w.nr_iteracji FROM Wymagania w WHERE w.Projekty_id = @proj_id AND w.status != 'usunięte';";            
+            if (usuniete_CheckBox.Checked) SqlDataSource1.SelectCommand = "SELECT w.id, w.nazwa, STUFF((SELECT ',  ' +convert(VARCHAR,wd.nr_wydania)+'.'+convert(VARCHAR,i.nr_iteracji) FROM  Iteracje_Wymagania iw, Iteracje i, Wydania wd WHERE iw.WymaganieId=w.id and i.id=iw.IteracjaId and wd.id = i.Wydania_id FOR XML PATH ('')) , 1, 1, '') AS '[Wydanie].[Iteracja]'  FROM Wymagania w WHERE w.Projekty_id = @proj_id";
+            else SqlDataSource1.SelectCommand = "SELECT w.id, w.nazwa, STUFF((SELECT ',  ' +convert(VARCHAR,wd.nr_wydania)+'.'+convert(VARCHAR,i.nr_iteracji) FROM  Iteracje_Wymagania iw, Iteracje i, Wydania wd WHERE iw.WymaganieId=w.id and i.id=iw.IteracjaId and wd.id = i.Wydania_id FOR XML PATH ('')) , 1, 1, '') AS '[Wydanie].[Iteracja]'  FROM Wymagania w WHERE w.Projekty_id = @proj_id AND w.status != 'usunięte';";
         }
 
         protected override void OnPreRenderComplete(EventArgs e)
         {
             cel_iteracji();
-            ustaw_checkboxy();
             base.OnPreRenderComplete(e);
         }
 
@@ -88,18 +87,18 @@ namespace Tracktracer
 
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
-                zapytanie.CommandType = CommandType.Text;                
+                zapytanie.CommandType = CommandType.Text;
                 zapytanie.CommandText = "SELECT i.cel_iteracji FROM Iteracje i, Wydania w WHERE w.Projekty_id = '" + projekt_id + "' AND w.nr_wydania = '" + wydanie + "' AND i.nr_iteracji ='" + iteracja + "' AND i.Wydania_id=w.id;";
 
                 SqlDataReader reader;
                 reader = zapytanie.ExecuteReader();
                 try
-                {                    
+                {
                     reader.Read();
                     celIt_Label.Text = reader.GetString(0);
                     reader.Close();
                 }
-                catch 
+                catch
                 {
                     reader.Dispose();
                 }
@@ -124,7 +123,7 @@ namespace Tracktracer
             if (sprawdz_zaznaczone() != 0)
             {
                 string iteracja = iteracja_DropDownList.SelectedValue;
-                string wydanie = wydanie_DropDownList.SelectedValue;                
+                string wydanie = wydanie_DropDownList.SelectedValue;
                 int i_id;
                 SqlTransaction trans = conn.BeginTransaction();
 
@@ -145,7 +144,7 @@ namespace Tracktracer
                             i_id = reader.GetInt32(0);
                             reader.Close();
                         }
-                        catch 
+                        catch
                         {
                             reader.Dispose();
                             i_id = -1;
@@ -157,13 +156,72 @@ namespace Tracktracer
                         zapytanie2.CommandType = CommandType.Text;
                         zapytanie2.CommandText = "UPDATE Wymagania SET Iteracje_id='" + i_id + "', nr_iteracji='" + iteracja + "', nr_wydania='" + wydanie + "' WHERE id='" + i + "'";
                         zapytanie2.ExecuteNonQuery();
+
+                        SqlCommand zapytanie3 = new SqlCommand();
+                        zapytanie3.Connection = conn;
+                        zapytanie3.Transaction = trans;
+                        zapytanie3.CommandType = CommandType.Text;
+                        zapytanie3.CommandText = "INSERT INTO Iteracje_Wymagania VALUES(" + i_id + ", " + i + ")";
+                        zapytanie3.ExecuteNonQuery();
                     }
                     trans.Commit();
                     GridView1.DataBind();
-                    ustaw_checkboxy();
                 }
                 catch
-                {                    
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    trans.Dispose();
+                }
+            }
+        }
+
+        protected void usun_Button_Click(object sender, EventArgs e)
+        {
+            if (sprawdz_zaznaczone() != 0)
+            {
+                string iteracja = iteracja_DropDownList.SelectedValue;
+                string wydanie = wydanie_DropDownList.SelectedValue;
+                int i_id;
+                SqlTransaction trans = conn.BeginTransaction();
+
+                try
+                {
+                    foreach (string i in zaznaczone_id)
+                    {
+                        SqlCommand zapytanie = new SqlCommand();
+                        zapytanie.Connection = conn;
+                        zapytanie.Transaction = trans;
+                        zapytanie.CommandType = CommandType.Text;
+                        zapytanie.CommandText = "SELECT i.id FROM Wydania w, Iteracje i WHERE w.Projekty_id='" + projekt_id + "' AND w.nr_wydania='" + wydanie + "' AND i.Wydania_id=w.id AND i.nr_iteracji ='" + iteracja + "';";
+
+                        SqlDataReader reader = zapytanie.ExecuteReader();
+                        try
+                        {
+                            reader.Read();
+                            i_id = reader.GetInt32(0);
+                            reader.Close();
+                        }
+                        catch
+                        {
+                            reader.Dispose();
+                            i_id = -1;
+                        }
+
+                        SqlCommand zapytanie2 = new SqlCommand();
+                        zapytanie2.Connection = conn;
+                        zapytanie2.Transaction = trans;
+                        zapytanie2.CommandType = CommandType.Text;
+                        zapytanie2.CommandText = " DELETE FROM Iteracje_Wymagania WHERE IteracjaId = '" + i_id + "' AND WymaganieId = '" + i + "'";
+                        zapytanie2.ExecuteNonQuery();
+                    }
+                    trans.Commit();
+                    GridView1.DataBind();
+                }
+                catch
+                {
                     trans.Rollback();
                 }
                 finally
@@ -181,7 +239,7 @@ namespace Tracktracer
             foreach (GridViewRow row in GridView1.Rows)
             {
                 if (((CheckBox)row.FindControl("CheckBox1")).Checked == true)
-                {                    
+                {
                     zaznaczone_id.Add(row.Cells[1].Text);
                     sa = 1;
                 }
@@ -189,16 +247,6 @@ namespace Tracktracer
             return sa;
         }
 
-        protected void ustaw_checkboxy()
-        {
-            foreach (GridViewRow row in GridView1.Rows)
-            {                
-                if (row.Cells[3].Text.CompareTo("&nbsp;") != 0)
-                {
-                    ((CheckBox)row.FindControl("CheckBox1")).Enabled = false;
-                }
-            }
-        }
 
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
         {

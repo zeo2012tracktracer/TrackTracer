@@ -58,11 +58,9 @@
                     </asp:TableCell>
                     <asp:TableCell ForeColor="Black">
                         <asp:Label ID="brak_przypisania_Label" runat="server" Text="Wymaganie nie zostało jeszcze przypisane do żadnej iteracji" Visible="false"></asp:Label>
-                        <asp:Label ID="wydanie_Label" runat="server" Text="Wydanie: X"></asp:Label>
-                        &nbsp;&nbsp;
                         <asp:Label ID="iteracja_Label" runat="server" Text="Iteracja: X"></asp:Label>
                         &nbsp;&nbsp;&nbsp;
-                        <asp:Button ID="przypisanie_Button" runat="server" Text="Usuń przypisanie" onclick="przypisanie_Button_Click" />        
+                        <asp:Button ID="przypisanie_Button" runat="server" Text="Usuń przypisania" onclick="przypisanie_Button_Click" />        
                     </asp:TableCell>
                 </asp:TableRow>
                 <asp:TableRow>
@@ -87,7 +85,7 @@
             <asp:TextBox ID="opis_TextBox" runat="server" BorderStyle="None" Width="600px" TextMode="MultiLine"></asp:TextBox>
             <br />
             <br />
-            <asp:table runat="server">
+            <asp:table ID="Table1" runat="server">
                 <asp:TableRow VerticalAlign="Top">
                 <asp:TableCell Width="460px" HorizontalAlign="Left">                                
                     <asp:Label ID="uwagi_Label" runat="server" Text="Uwagi: "></asp:Label>
@@ -144,7 +142,7 @@
                                     <asp:LinkButton ID="myLink2" CommandName="Wymaganie" CommandArgument='<%#Eval("id") %>' runat="server">                                        
                                     <%#Eval("nazwa") %>
                                     </asp:LinkButton>
-                                    <div Visible='<%# Eval("opis") != DBNull.Value %>' runat="server">
+                                    <div id="Div1" Visible='<%# Eval("opis") != DBNull.Value %>' runat="server">
                                     <asp:Label ID="lab" Text="Komentarz: " runat="server"><%#Eval("opis") %></asp:Label>          
                                     </div>                                                                                                           
                                     <asp:LinkButton ID="weryfikacjaLink" CommandName="Weryfikuj" CommandArgument='<%#Eval("id") %>' runat="server"
@@ -183,7 +181,7 @@
                         <SortedDescendingCellStyle BackColor="#E9EBEF" />
                         <SortedDescendingHeaderStyle BackColor="#4870BE" />
                         <EmptyDataTemplate>
-                            <asp:Label Text="Brak powiązanych wymagań" Visible="true" runat="server"></asp:Label>
+                            <asp:Label ID="Label3" Text="Brak powiązanych wymagań" Visible="true" runat="server"></asp:Label>
                         </EmptyDataTemplate>
                         </asp:GridView>
                         <asp:SqlDataSource ID="SqlDataSource2" runat="server" 
@@ -237,7 +235,7 @@
                         <SortedDescendingCellStyle BackColor="#E9EBEF" />
                         <SortedDescendingHeaderStyle BackColor="#4870BE" />
                         <EmptyDataTemplate>
-                            <asp:Label Text="Brak powiązanych plików" Visible="true" runat="server"></asp:Label>
+                            <asp:Label ID="Label5" Text="Brak powiązanych plików" Visible="true" runat="server"></asp:Label>
                         </EmptyDataTemplate>
                         </asp:GridView>
                         <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
@@ -283,7 +281,7 @@
                             <SortedDescendingCellStyle BackColor="#E9EBEF" />
                             <SortedDescendingHeaderStyle BackColor="#4870BE" />
                             <EmptyDataTemplate>
-                                <asp:Label ID="Label3" Text="Nie utworzono przypadków testowych." Visible="true" runat="server"></asp:Label>
+                                <asp:Label ID="Label8" Text="Nie utworzono przypadków testowych." Visible="true" runat="server"></asp:Label>
                             </EmptyDataTemplate>
                         </asp:GridView>
                         <asp:SqlDataSource ID="SqlDataSource5" runat="server" 
@@ -337,7 +335,7 @@
                             <asp:TemplateField >                            
                                 <ItemStyle HorizontalAlign="Center" Width="170px"/>
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="noweWym" CommandName="Powiaz_wym" CommandArgument='<%#Eval("id") %>' runat="server">                                        
+                                    <asp:LinkButton ID="LinkButton1" CommandName="Powiaz_wym" CommandArgument='<%#Eval("id") %>' runat="server">                                        
                                     Powiąż z wymaganiem
                                     </asp:LinkButton>                                    
                                 </ItemTemplate>
@@ -356,7 +354,7 @@
                         <SortedDescendingCellStyle BackColor="#E9EBEF" />
                         <SortedDescendingHeaderStyle BackColor="#4870BE" />
                         <EmptyDataTemplate>
-                            <asp:Label ID="Label3" Text="Brak wymagań do przypisania" Visible="true" runat="server"></asp:Label>
+                            <asp:Label ID="Label9" Text="Brak wymagań do przypisania" Visible="true" runat="server"></asp:Label>
                         </EmptyDataTemplate>
                     </asp:GridView>
                     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
@@ -415,7 +413,7 @@
                         <SortedDescendingCellStyle BackColor="#E9EBEF" />
                         <SortedDescendingHeaderStyle BackColor="#4870BE" />
                         <EmptyDataTemplate>
-                            <asp:Label ID="Label5" Text="Brak plików do powiązania" Visible="true" runat="server"></asp:Label>
+                            <asp:Label ID="Label10" Text="Brak plików do powiązania" Visible="true" runat="server"></asp:Label>
                         </EmptyDataTemplate>
                         </asp:GridView>
                         <asp:SqlDataSource ID="SqlDataSource4" runat="server" ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
@@ -457,7 +455,5 @@
     </div>
      <br />
     <br />
-
-
     <br />     
 </asp:Content>

@@ -40,7 +40,7 @@ namespace Tracktracer
             {
                 Server.Transfer("Index.aspx");
             }
-            
+
             powroty = (List<string>)Session["powroty"];
             powroty_id = (List<int>)Session["powroty_id"];
 
@@ -58,11 +58,17 @@ namespace Tracktracer
             Session["powroty_id"] = powroty_id;
 
             SqlCommand zapytanie = new SqlCommand();
+            SqlCommand zapytanie2 = new SqlCommand();
+
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "SELECT w.nazwa, w.status, w.nr_rewizji, w.nr_wydania, w.nr_iteracji, wer.opis, wer.uwagi, wer.udzialowcy, wer.data FROM Wymagania w, Wersje_wymagan wer WHERE w.id='" + wymaganie_id + "' AND wer.Wymaganie_id = w.id ORDER BY wer.data DESC;";
 
-            SqlDataReader reader;
+            zapytanie2.Connection = conn;
+            zapytanie2.CommandType = CommandType.Text;
+            zapytanie2.CommandText = "SELECT i.nr_iteracji, w.nr_wydania FROM Iteracje_Wymagania iw, Iteracje i, Wydania w WHERE iw.WymaganieId = '" + wymaganie_id + "' AND iw.IteracjaId=i.id AND i.Wydania_id = w.id;";
+
+            SqlDataReader reader, reader2;
             reader = zapytanie.ExecuteReader();
             try
             {
@@ -73,33 +79,47 @@ namespace Tracktracer
                 opis1 = reader.GetString(5);
                 uwagi1 = reader.GetString(6);
                 udzialowcy1 = reader.GetString(7);
-//                akt_rewizja = reader.GetInt32(2);                
+                //                akt_rewizja = reader.GetInt32(2);                
 
-                if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
-                {
-                    wydanie_Label.Text = "Wydanie: " + reader.GetInt32(3);
-                    iteracja_Label.Text = "Iteracja: " + reader.GetInt32(4);
-                }
-                else
-                {
-                    brak_przypisania_Label.Visible = true;
-                    wydanie_Label.Visible = false;
-                    iteracja_Label.Visible = false;
-                    przypisanie_Button.Visible = false;
-                }
                 if (!IsPostBack)
                 {
-                    ustaw_DropDownList(status);                    
-                    opis_TextBox.Text = opis1;                    
-                    uwagi_TextBox.Text = uwagi1;                    
+                    ustaw_DropDownList(status);
+                    opis_TextBox.Text = opis1;
+                    uwagi_TextBox.Text = uwagi1;
                     udzialowcy_TextBox.Text = udzialowcy1;
                 }
 
                 reader.Close();
+
             }
             catch
             {
                 reader.Dispose();
+            }
+
+            reader2 = zapytanie2.ExecuteReader();
+            try
+            {
+                iteracja_Label.Text = "";
+                reader2.Read();
+
+                if (reader2.HasRows)
+                    do
+                    {
+                        iteracja_Label.Text += "Wydanie: " + reader2.GetInt32(1) + " Iteracja: " + reader2.GetInt32(0) + "<br />";
+                    } while (reader2.Read());
+                else
+                {
+                    brak_przypisania_Label.Visible = true;
+                    iteracja_Label.Visible = false;
+                    przypisanie_Button.Visible = false;
+                }
+
+                reader2.Close();
+            }
+            catch
+            {
+                reader2.Dispose();
             }
 
             zapytanie.CommandText = "SELECT p.rewizja FROM Projekty p WHERE p.id='" + projekt_id + "'";
@@ -115,11 +135,11 @@ namespace Tracktracer
                     realizator_Label.Visible = true;
                     realizator_Label.Text = reader.GetString(0) + " " + reader.GetString(1) + " (login: " + reader.GetString(2) + " )";
                 }
-                else 
+                else
                 {
                     realizator_Label.Visible = false;
                 }
-                
+
 
                 reader.Close();
             }
@@ -130,12 +150,12 @@ namespace Tracktracer
 
             RangeValidator1.MaximumValue = akt_rewizja.ToString();
             projNazwa_Label.Text = nazwa;
-            if(!IsPostBack) zaladuj_wersje_DropDownList();
+            if (!IsPostBack) zaladuj_wersje_DropDownList();
             opisR_Label.Visible = false;
             uwagiR_Label.Visible = false;
             udzialowcyR_Label.Visible = false;
             TabContainer1.Visible = true;
-            
+
         }
 
         // Usunięcie przypisania do iteracji. Usuwany jest również realizator wymagania.
@@ -145,13 +165,18 @@ namespace Tracktracer
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "UPDATE Wymagania SET Iteracje_id = NULL, nr_iteracji = NULL, nr_wydania = NULL, Uzytkownik_id = NULL WHERE id='" + wymaganie_id + "';";
+
+            SqlCommand zapytanie2 = new SqlCommand();
+            zapytanie2.Connection = conn;
+            zapytanie2.CommandType = CommandType.Text;
+            zapytanie2.CommandText = "DELETE FROM Iteracje_Wymagania WHERE WymaganieId = '" + wymaganie_id + "'";
             try
             {
                 zapytanie.ExecuteNonQuery();
+                zapytanie2.ExecuteNonQuery();
                 przypisanie_Button.Visible = false;
-                wydanie_Label.Visible = false;
                 iteracja_Label.Visible = false;
-                brak_przypisania_Label.Visible = true;                
+                brak_przypisania_Label.Visible = true;
             }
             catch { }
         }
@@ -200,13 +225,13 @@ namespace Tracktracer
                 Server.Transfer(strona);
             }
         }
-                
+
         protected void GridView_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int no = 0;
             if (e.CommandName.CompareTo("Wymaganie") == 0)
-            {                                
-                no = Convert.ToInt32(e.CommandArgument);                
+            {
+                no = Convert.ToInt32(e.CommandArgument);
                 Session["wymaganie_id"] = no.ToString();
                 Session["back"] = "Wymaganie.aspx";
                 Session["back_id"] = wymaganie_id;
@@ -221,7 +246,7 @@ namespace Tracktracer
                 Server.Transfer("Plik.aspx");
             }
             else if (e.CommandName.CompareTo("Powiaz") == 0)
-            {                
+            {
                 GridView4_Powiaz_plik(Convert.ToString(e.CommandArgument));
             }
             else if (e.CommandName.CompareTo("PrzypadekTestowy") == 0)
@@ -233,10 +258,10 @@ namespace Tracktracer
                 Server.Transfer("PrzypadekTestowy.aspx");
             }
             else if (e.CommandName.CompareTo("Weryfikuj") == 0)
-            {                
+            {
                 oznacz_jako_zweryfikowane(Convert.ToString(e.CommandArgument));
             }
-                // Nowe powiązanie z wymaganiem
+            // Nowe powiązanie z wymaganiem
             else if (e.CommandName.CompareTo("Powiaz_wym") == 0)
             {
                 no = Convert.ToInt32(e.CommandArgument);
@@ -265,7 +290,7 @@ namespace Tracktracer
                     GridView2.DataBind();
                     komentarz_TextBox.Text = string.Empty;
                 }
-                catch{}
+                catch { }
             }
             // Usunięcie powiązań pomiędzy wymaganiami
             else if (e.CommandName.CompareTo("Usun_wym") == 0)
@@ -284,9 +309,9 @@ namespace Tracktracer
                 }
                 catch { }
             }
-            
+
         }
-       
+
         // Usunięcie powiązań zadania z plikiem
         protected void GridView3_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -303,10 +328,10 @@ namespace Tracktracer
             }
             catch { }
         }
-      
+
         // Powiązanie z wybranym plikiem
         protected void GridView4_Powiaz_plik(string plik_do_powiazania)
-        {   
+        {
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
@@ -327,18 +352,24 @@ namespace Tracktracer
         }
 
         protected void usun_Button_Click(object sender, EventArgs e)
-        {            
+        {
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
             zapytanie.CommandText = "UPDATE Wymagania SET status = 'usunięte', nr_wydania = NULL, nr_iteracji = NULL, Iteracje_id = NULL, Uzytkownik_id = NULL WHERE id = '" + wymaganie_id + "'";
 
+            try
+            {
+                zapytanie.ExecuteNonQuery();
+                status = "usunięte";
+            }
+            catch { }
+
             brak_przypisania_Label.Visible = true;
-            wydanie_Label.Visible = false;
             iteracja_Label.Visible = false;
             przypisanie_Button.Visible = false;
             realizator_Label.Visible = false;
-            
+
             ustaw_DropDownList("usunięte");
         }
 
@@ -386,7 +417,7 @@ namespace Tracktracer
             catch { }
 
             ustaw_DropDownList(operacja);
-            
+
         }
 
         // Zmiena wybranego statusu na liście rozwijalnej
@@ -453,7 +484,7 @@ namespace Tracktracer
                         zapytanie.CommandType = CommandType.Text;
                         zapytanie.CommandText = "INSERT INTO Wersje_wymagan (Wymaganie_id, opis, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + wymaganie_id + "', '" + opis + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";
 
-                        
+
                         zapytanie.ExecuteNonQuery();
                         zapytanie.CommandText = "UPDATE Wymagania SET wersja = wersja + 1 WHERE id = '" + wymaganie_id + "'";
                         zapytanie.ExecuteNonQuery();
@@ -478,13 +509,13 @@ namespace Tracktracer
             reader = zapytanie.ExecuteReader();
             try
             {
-                reader.Read();                
-                opis_TextBox.Text = reader.GetString(0);                               
-                uwagi_TextBox.Text = reader.GetString(1);                                
+                reader.Read();
+                opis_TextBox.Text = reader.GetString(0);
+                uwagi_TextBox.Text = reader.GetString(1);
                 udzialowcy_TextBox.Text = reader.GetString(2);
                 reader.Close();
             }
-            catch 
+            catch
             {
                 reader.Dispose();
             }
@@ -509,18 +540,18 @@ namespace Tracktracer
             }
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
-            {                                
+            {
                 while (reader.Read())
                 {
                     data = reader.GetDateTime(1);
-                    wersje_DropDownList.Items.Add(new ListItem(data.ToString()+ " " + reader.GetString(2) + " " + reader.GetString(3) + " (login: " + reader.GetString(4) + ") ", reader.GetInt32(0).ToString()));
+                    wersje_DropDownList.Items.Add(new ListItem(data.ToString() + " " + reader.GetString(2) + " " + reader.GetString(3) + " (login: " + reader.GetString(4) + ") ", reader.GetInt32(0).ToString()));
                 }
-                reader.Close();                                                
+                reader.Close();
             }
-            catch 
+            catch
             {
                 reader.Dispose();
-            }            
+            }
         }
 
         protected void oznacz_jako_zweryfikowane(string id)
@@ -546,7 +577,7 @@ namespace Tracktracer
         protected void rew_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             zaladuj_wersje_DropDownList();
-            wersje_DropDownList_SelectedIndexChanged(null, null);           
+            wersje_DropDownList_SelectedIndexChanged(null, null);
         }
     }
 }

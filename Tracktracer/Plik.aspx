@@ -45,7 +45,6 @@
     </SelectParameters>
 </asp:SqlDataSource>
 <br />
-
     <asp:Label ID="powiazane_Label" runat="server"></asp:Label>
     <br />
     <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" 
@@ -83,7 +82,6 @@
         </SelectParameters>
     </asp:SqlDataSource>
     <br />
-
     <asp:Label ID="Label2" runat="server" Text="Wybór rewizji do porównania: "></asp:Label>
     <br />
     <br />

@@ -47,8 +47,7 @@ namespace Tracktracer
             catch 
             {
                 akt_rewizja = 0;
-            }
-        
+            }        
         }
 
         protected void zadanie_Button_Click(object sender, EventArgs e)
@@ -90,9 +89,7 @@ namespace Tracktracer
                     reader.Close();
 
                     zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (tresc_Zadania, nr_rewizji, Zadanie_programistyczne_id, Uzytkownik_id) VALUES ('" + tresc + "', '" + akt_rewizja + "', '" + zad_id + "', '" + user_id + "');";
-                    zapytanie.ExecuteNonQuery();
-
-                    
+                    zapytanie.ExecuteNonQuery();                    
 
                     trans.Commit();
                     info_Label.Text = "Dodano zadanie";
@@ -154,7 +151,5 @@ namespace Tracktracer
                 Server.Transfer(strona);
             }
         }
-
-
     }
 }

@@ -74,6 +74,5 @@ namespace Tracktracer
         {
             Server.Transfer("SzczegolyProjektu.aspx?id=" + projekt_id);
         }
-
     }
 }

@@ -53,6 +53,5 @@ namespace Tracktracer
 
             Server.Transfer("EdycjaUzytkownika.aspx");
         }
-
    }
 }

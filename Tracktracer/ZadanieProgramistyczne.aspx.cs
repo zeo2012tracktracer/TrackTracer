@@ -258,9 +258,9 @@ namespace Tracktracer
                 Server.Transfer("ZadanieProgramistyczne.aspx");
             }
             else if (e.CommandName.CompareTo("usunPowiazaneZadanie") == 0)
-                // Usunięcie powiązań z innymi zadaniami.
+            // Usunięcie powiązań z innymi zadaniami.
             {
-                no = Convert.ToInt32(e.CommandArgument);                
+                no = Convert.ToInt32(e.CommandArgument);
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
@@ -271,7 +271,7 @@ namespace Tracktracer
                     GridView1.DataBind();
                     GridView2.DataBind();
                 }
-                catch { }                
+                catch { }
             }
             else if (e.CommandName.CompareTo("Powiaz") == 0)
             {

@@ -1,8 +1,7 @@
 ﻿<%@ Page Title="TrackTracer"  Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Historyjka.aspx.cs" Inherits="Tracktracer.Historyjka" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">   
-    
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">       
     <asp:Table ID="info_Table" runat="server">
         <asp:TableRow>
             <asp:TableCell>

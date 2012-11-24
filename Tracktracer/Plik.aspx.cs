@@ -185,7 +185,6 @@ namespace Tracktracer
                     }
                 }
                 reader.Close();
-
                                                                     
                 zapytanie.CommandText = "SELECT sciezka FROM Pliki WHERE id='" + id_pliku + "';";                    
                 reader = zapytanie.ExecuteReader();
@@ -391,12 +390,9 @@ namespace Tracktracer
                     {
                         if ((revLine = reader.ReadLine()) != null)
                         {
-                            //if (revLine.CompareTo(difLine) == 0)                            
                             if ((difLine.Length > 1) && revLine.EndsWith(difLine.Remove(0, 1)))                                      
-                            //if (revLine.EndsWith(difLine))
                             {
                                 //dodaj znacznik otwierajacy
-                                //code += "<br>";
                                 code += openSpan;
                                 newline = Server.HtmlEncode(revLine);
                                 code += newline.Replace(" ", "&nbsp;");
@@ -485,7 +481,6 @@ namespace Tracktracer
 
                 Server.Transfer(strona);
             }
-        }
-       
+        }       
     }
 }

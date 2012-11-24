@@ -51,7 +51,6 @@ namespace Tracktracer
             {
                 nowyUzytkownik_Label.Text = "Wybrany login jest już zajęty";
             }
-
         }
 
         protected void Button1_Click(object sender, EventArgs e)

@@ -3,10 +3,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
 <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" CombineScripts="false">  
-</asp:ToolkitScriptManager>  
-     
+</asp:ToolkitScriptManager>       
    <asp:Accordion   
     ID="Accordion1"   
     CssClass="accordion"  
@@ -291,12 +289,10 @@
                                 <asp:SessionParameter Name="projekt_id" SessionField="projekt_id" Type="Int32" />
                                 <asp:SessionParameter Name="wymaganie_id" SessionField="wymaganie_id" Type="Int32" />
                             </SelectParameters>
-                        </asp:SqlDataSource>                    
-                        
+                        </asp:SqlDataSource>                                            
                     </ContentTemplate>
                 </ajaxToolkit:TabPanel>
-            </ajaxToolkit:TabContainer>
-        
+            </ajaxToolkit:TabContainer>        
         </Content>
         </asp:AccordionPane>
         <asp:AccordionPane ID="AccordionPane2" runat="server">

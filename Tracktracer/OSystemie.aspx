@@ -19,6 +19,5 @@
         oprogramowania”
         <br />
         <br />
-        Autor: Krzysztof Ploetzing</asp:Panel>
-   
+        Autor: Krzysztof Ploetzing</asp:Panel>   
 </asp:Content>

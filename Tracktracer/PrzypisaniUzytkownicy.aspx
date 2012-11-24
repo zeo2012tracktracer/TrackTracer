@@ -37,8 +37,7 @@
         </EmptyDataTemplate>
     </asp:GridView>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
-        
+        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>"         
         SelectCommand="SELECT u.login, u.imie, u.nazwisko FROM Uzytkownicy u, Uzytkownicy_Projekty up WHERE up.Projekt_id=@id_projektu AND u.id = up.Uzytkownik_id AND u.status_konta='aktywne' AND u.id != @wlasciciel">
         <SelectParameters>
             <asp:SessionParameter Name="id_projektu" SessionField="projekt_id" />

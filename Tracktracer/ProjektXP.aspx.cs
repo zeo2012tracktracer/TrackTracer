@@ -105,7 +105,6 @@ namespace Tracktracer
         protected void iteracja_DropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             cel_iteracji();
-
         }
 
         protected void historyjki_Button_Click(object sender, EventArgs e)
@@ -345,6 +344,5 @@ namespace Tracktracer
 
             Server.Transfer("Default.aspx");
         }
-
     }
 }

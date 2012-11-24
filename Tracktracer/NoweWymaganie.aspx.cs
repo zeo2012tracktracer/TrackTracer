@@ -132,11 +132,6 @@ namespace Tracktracer
             }
         }
 
-        protected void opis_TextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         protected void anuluj_Button_Click(object sender, EventArgs e)
         {
             Server.Transfer("RejestrProduktowy.aspx");

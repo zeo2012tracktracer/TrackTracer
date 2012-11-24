@@ -119,6 +119,5 @@ namespace Tracktracer
                 Server.Transfer("Plik.aspx");
             }
         }
-
     }
 }

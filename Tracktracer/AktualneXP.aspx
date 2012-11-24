@@ -22,9 +22,7 @@
         </asp:TableCell>
     </asp:TableRow>
 </asp:Table>
-
 <br />
-
 Twoje zadania w tym projekcie:
     <br />
     <br />

@@ -155,7 +155,6 @@ namespace Tracktracer
             {
                 reader.Dispose();
             }
-
         }
 
         // Usunięcie przypisania historyjki do iteracji
@@ -335,7 +334,6 @@ namespace Tracktracer
                     brak_przypisania_Label.Visible = true;
                     przypisanie_Button.Visible = false;
                 }
-
             }
             catch { }                        
         }

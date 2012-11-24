@@ -78,8 +78,7 @@ namespace Tracktracer
                 status = reader.GetString(1);
                 opis1 = reader.GetString(5);
                 uwagi1 = reader.GetString(6);
-                udzialowcy1 = reader.GetString(7);
-                //                akt_rewizja = reader.GetInt32(2);                
+                udzialowcy1 = reader.GetString(7);             
 
                 if (!IsPostBack)
                 {
@@ -90,7 +89,6 @@ namespace Tracktracer
                 }
 
                 reader.Close();
-
             }
             catch
             {
@@ -155,7 +153,6 @@ namespace Tracktracer
             uwagiR_Label.Visible = false;
             udzialowcyR_Label.Visible = false;
             TabContainer1.Visible = true;
-
         }
 
         // Usunięcie przypisania do iteracji. Usuwany jest również realizator wymagania.
@@ -519,7 +516,6 @@ namespace Tracktracer
             {
                 reader.Dispose();
             }
-
         }
 
         protected void zaladuj_wersje_DropDownList()

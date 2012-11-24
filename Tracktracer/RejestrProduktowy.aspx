@@ -57,8 +57,7 @@
         </EmptyDataTemplate>
     </asp:GridView>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
-                               
+        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>"                                
         SelectCommand="SELECT w.id, w.nazwa, STUFF((SELECT ',  ' +convert(VARCHAR,wd.nr_wydania)+'.'+convert(VARCHAR,i.nr_iteracji) FROM  Iteracje_Wymagania iw, Iteracje i, Wydania wd WHERE iw.WymaganieId=w.id and i.id=iw.IteracjaId and wd.id = i.Wydania_id FOR XML PATH ('')) , 1, 1, '') AS '[Wydanie].[Iteracja]'  FROM Wymagania w WHERE w.Projekty_id = @proj_id AND w.status != 'usunięte';">
         <SelectParameters>
             <asp:SessionParameter Name="proj_id" SessionField="projekt_id" />

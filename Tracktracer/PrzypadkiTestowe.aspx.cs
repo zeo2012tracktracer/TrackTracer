@@ -21,7 +21,6 @@ namespace Tracktracer
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
             try
             {
                 user_id = (int)Session["user_id"];
@@ -49,8 +48,7 @@ namespace Tracktracer
             Session["powroty"] = powroty;
             Session["powroty_id"] = powroty_id;
 
-            nazwa_Label.Text = "Projekt: " + nazwa;
-            
+            nazwa_Label.Text = "Projekt: " + nazwa;            
         }
 
         protected override void OnPreRenderComplete(EventArgs e)

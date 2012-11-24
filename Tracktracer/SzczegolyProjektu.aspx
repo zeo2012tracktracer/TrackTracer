@@ -11,8 +11,7 @@
         <Panes>
             <asp:AccordionPane ID="AccordionPane1" runat="server">
                 <Header>Informacje ogólne</Header>
-                <Content>
-      
+                <Content>      
                     <asp:Table ID="Table1" runat="server" Height="113px">
                         <asp:TableRow runat="server">
                             <asp:TableCell runat="server">Nazwa: </asp:TableCell>
@@ -68,8 +67,7 @@
                     <asp:Label ID="cel_Label" runat="server" Visible="False">Cel iteracji: </asp:Label>
                     <asp:Label ID="celIt_Label" runat="server" Text="Label" Visible="False"></asp:Label>
                     <asp:SqlDataSource ID="SqlDataSource2" runat="server" 
-                        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>" 
-        
+                        ConnectionString="<%$ ConnectionStrings:test5ConnectionString %>"         
                         SelectCommand="SELECT [nr_wydania] FROM [Wydania] WHERE ([Projekty_id] = @Projekty_id)">
                         <SelectParameters>
                             <asp:SessionParameter Name="Projekty_id" SessionField="projekt_id" 
@@ -94,8 +92,7 @@
             </asp:AccordionPane>
             <asp:AccordionPane ID="AccordionPane2" runat="server">
                 <Header>Użytkownicy realizujący projekt: </Header>
-                <Content>
-                
+                <Content>                
                     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" 
                         DataSourceID="SqlDataSource1"
                         DataKeyNames="login" CellPadding="4" ForeColor="#333333" GridLines="None">

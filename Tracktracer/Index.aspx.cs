@@ -33,7 +33,6 @@ namespace Tracktracer
         {
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = "Data Source=.;Initial Catalog=tracktracer;User ID=user1;Password=zeo2012;Integrated Security=True";
-            //conn.ConnectionString = "Data Source=SATELLITE;Initial Catalog=test5;Integrated Security=True";
             conn.Open();
 
             SqlCommand zapytanie = new SqlCommand();
@@ -65,10 +64,7 @@ namespace Tracktracer
             } else {
                 reader.Close();
                 conn.Close();
-            }
-
-
-            
+            }            
         }
     }
 }

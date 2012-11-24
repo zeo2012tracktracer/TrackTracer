@@ -82,8 +82,7 @@
             </asp:AccordionPane>
             <asp:AccordionPane ID="AccordionPane2" runat="server">
                 <Header>Użytkownicy realizujący projekt: </Header>
-                <Content>    
-    
+                <Content>        
                     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" 
                         DataSourceID="SqlDataSource1"
                         DataKeyNames="login" CellPadding="4" ForeColor="#333333" GridLines="None">

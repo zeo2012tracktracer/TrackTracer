@@ -58,7 +58,6 @@ namespace Tracktracer
                 {
                     Session["metodyka"] = "Scrum";
                 }
-
             }
             catch 
             {
@@ -130,8 +129,7 @@ namespace Tracktracer
         
         protected void iteracja_DropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cel_iteracji();
-            
+            cel_iteracji();            
         }
 
         protected void produkt_Button_Click(object sender, EventArgs e)
@@ -337,8 +335,7 @@ namespace Tracktracer
             SqlTransaction trans = conn.BeginTransaction();            
 
             try
-            {                
-                
+            {                                
                 SqlCommand zap = new SqlCommand();
                 zap.Connection = conn;
                 zap.Transaction = trans;

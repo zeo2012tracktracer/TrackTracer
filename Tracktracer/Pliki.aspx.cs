@@ -367,8 +367,7 @@ namespace Tracktracer
             }
         }
 
-        // Usunięcie z listy modyfikacji poleceń usunięcią wskazujących
-        // na pliki, które zmieniły nazwę i wywodzą się z innego pliku
+        // Usunięcie z listy modyfikacji poleceń usunięcią wskazujących na pliki, które zmieniły nazwę i wywodzą się z innego pliku
         protected void usun_nadmiarowe( List<FileOp> list )
         {
             List<FileOp> do_usuniecia = new List<FileOp>();

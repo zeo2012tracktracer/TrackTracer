@@ -288,8 +288,6 @@ namespace Tracktracer
                 trans.Dispose();
                 Server.Transfer((string)Session["back"]);
             }
-        }
-
-         
+        }         
     }
 }

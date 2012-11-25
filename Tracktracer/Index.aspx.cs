@@ -29,17 +29,25 @@ namespace Tracktracer
             zaloguj(login, haslo);
         }
 
+        protected void ButtonRegister_Click(object sender, EventArgs e)
+        {
+            Server.Transfer("Rejestruj.aspx");
+        }
+
         protected void zaloguj(String login, String haslo)
         {
-            SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = "Data Source=.;Initial Catalog=tracktracer;User ID=user1;Password=zeo2012;Integrated Security=True";
-            conn.Open();
+            try
+            {
+                SqlConnection conn = new SqlConnection();
+                conn.ConnectionString = @"Data Source=.\SQLSERVER;Initial Catalog=tracktracer; User ID=tracktracer; Integrated Security=True";
+                conn.Open();
 
-            SqlCommand zapytanie = new SqlCommand();
-            zapytanie.Connection = conn;
-            zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT id, aktywny_projekt FROM Uzytkownicy WHERE login='"+login+"' AND haslo='"+haslo+"' AND status_konta='aktywne'";           
-            
+                SqlCommand zapytanie = new SqlCommand();
+                zapytanie.Connection = conn;
+                zapytanie.CommandType = CommandType.Text;
+                zapytanie.CommandText = "SELECT id, aktywny_projekt FROM Uzytkownicy WHERE login='" + login + "' AND haslo='" + haslo + "' AND status_konta='aktywne'";
+           
+
             SqlDataReader reader = zapytanie.ExecuteReader();
 
             if(reader.HasRows){
@@ -64,7 +72,14 @@ namespace Tracktracer
             } else {
                 reader.Close();
                 conn.Close();
-            }            
+            }
+
+            }
+            catch (SqlException ex)
+            {
+                Console.Error.WriteLine(ex.ToString());
+            }
+            
         }
     }
 }

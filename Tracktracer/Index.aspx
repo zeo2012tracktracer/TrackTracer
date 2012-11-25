@@ -23,6 +23,8 @@
             Width="150px"></asp:TextBox>
         <br />
         <br />
+        <asp:Button ID="ButtonRegister" runat="server" onclick="ButtonRegister_Click" 
+            Text="Zarejestruj się" />
         <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
             Text="Zaloguj" />
         <br />

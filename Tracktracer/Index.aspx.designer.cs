@@ -58,6 +58,15 @@ namespace Tracktracer {
         protected global::System.Web.UI.WebControls.TextBox Password_textbox;
         
         /// <summary>
+        /// ButtonRegister control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ButtonRegister;
+        
+        /// <summary>
         /// Button1 control.
         /// </summary>
         /// <remarks>

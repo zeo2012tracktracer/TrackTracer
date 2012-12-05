@@ -37,7 +37,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT z.id, z.nazwa FROM Uzytkownicy u, Zadania_programistyczne z WHERE u.id='" + user_id + "' AND z.id = u.aktywne_zadanie;";
+            zapytanie.CommandText = "SELECT z.id, z.nazwa FROM Uzytkownicy u, Zadania_programistyczne z WHERE u.id=@user_id AND z.id = u.aktywne_zadanie;";
+            zapytanie.Parameters.AddWithValue("@user_id", user_id);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {
@@ -95,7 +96,8 @@ namespace Tracktracer
                 }
                 catch { }
 
-                zapytanie.CommandText = "SELECT z.id, z.nazwa FROM Uzytkownicy u, Zadania_programistyczne z WHERE u.id='" + user_id + "' AND z.id = u.aktywne_zadanie;";
+                zapytanie.CommandText = "SELECT z.id, z.nazwa FROM Uzytkownicy u, Zadania_programistyczne z WHERE u.id=@user_id AND z.id = u.aktywne_zadanie;";
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
                 SqlDataReader reader = zapytanie.ExecuteReader();
                 try
                 {

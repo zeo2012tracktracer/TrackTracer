@@ -35,7 +35,8 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT p.nazwa FROM Projekty p WHERE p.id='" + aktywny_projekt +"';";
+                zapytanie.CommandText = "SELECT p.nazwa FROM Projekty p WHERE p.id=@aktywny_projekt;";
+                zapytanie.Parameters.AddWithValue("@aktywny_projekt", aktywny_projekt);
                 string nazwa_proj = (string)zapytanie.ExecuteScalar();
                 aktywny_projekt_Label.Text = "Twój aktywny projekt to: ";
                 akt_projekt_Link.Text = nazwa_proj;
@@ -66,12 +67,15 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt=" + aktywny_projekt + ", aktywne_wymaganie=NULL, aktywne_zadanie=NULL WHERE id=" + user_id + ";";
+                zapytanie.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt=@aktywny_projekt, aktywne_wymaganie=NULL, aktywne_zadanie=NULL WHERE id=@user_id + ;";
+                zapytanie.Parameters.AddWithValue("@aktywny_projekt", aktywny_projekt);
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
                 try
                 {
                     zapytanie.ExecuteNonQuery();
-                    
-                    zapytanie.CommandText = "SELECT p.nazwa FROM Projekty p WHERE p.id='" + aktywny_projekt + "';";
+
+                    zapytanie.CommandText = "SELECT p.nazwa FROM Projekty p WHERE p.id=@aktywny_projekt;";
+                    zapytanie.Parameters.AddWithValue("@aktywny_projekt", aktywny_projekt);
                     string nazwa_proj = (string)zapytanie.ExecuteScalar();
                     aktywny_projekt_Label.Text = "Twój aktywny projekt to: ";
                     akt_projekt_Link.Text = nazwa_proj;

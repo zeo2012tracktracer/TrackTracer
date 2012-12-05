@@ -33,7 +33,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT p.nazwa, p.metodyka FROM Projekty p WHERE p.id='" + aktywny_projekt + "';";
+            zapytanie.CommandText = "SELECT p.nazwa, p.metodyka FROM Projekty p WHERE p.id= @aktywny_projekt;";
+            zapytanie.Parameters.AddWithValue("@aktywny_projekt", aktywny_projekt);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {
@@ -56,7 +57,8 @@ namespace Tracktracer
             }
             Session["metodyka"] = "Scrum";
 
-            zapytanie.CommandText = "SELECT w.id, w.nazwa FROM Uzytkownicy u, Wymagania w WHERE u.id='" + user_id + "' AND w.id = u.aktywne_wymaganie;";
+            zapytanie.CommandText = "SELECT w.id, w.nazwa FROM Uzytkownicy u, Wymagania w WHERE u.id=@user_id AND w.id = u.aktywne_wymaganie;";
+            zapytanie.Parameters.AddWithValue("@user_id",user_id);
             reader = zapytanie.ExecuteReader();
             try
             {
@@ -108,15 +110,22 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Uzytkownicy SET aktywne_wymaganie ='" + no + "' WHERE id='" + user_id + "'";
+                zapytanie.CommandText = "UPDATE Uzytkownicy SET aktywne_wymaganie =@no WHERE id=@user_id";
+                zapytanie.Parameters.AddWithValue("@no", no);
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
                 try
                 {
                     zapytanie.ExecuteNonQuery();
                 }
                 catch { }
 
-                zapytanie.CommandText = "SELECT w.id, w.nazwa FROM Uzytkownicy u, Wymagania w WHERE u.id='" + user_id + "' AND w.id = u.aktywne_wymaganie;";
+                zapytanie.CommandText = "SELECT w.id, w.nazwa FROM Uzytkownicy u, Wymagania w WHERE u.id=@user_id AND w.id = u.aktywne_wymaganie;";
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                
+                
                 SqlDataReader reader = zapytanie.ExecuteReader();
+
+
                 try
                 {
                     reader.Read();

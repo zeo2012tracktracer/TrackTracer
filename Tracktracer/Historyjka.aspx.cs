@@ -59,7 +59,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT hu.nazwa, hu.status, hu.nr_rewizji, hu.nr_wydania, hu.nr_iteracji, wer.tresc, wer.uwagi, wer.udzialowcy, wer.data FROM Historyjki_uzytkownikow hu, Wersje_historyjek wer WHERE hu.id='" + historyjka_id + "' AND wer.Historyjka_uzytkownika_id = hu.id ORDER BY wer.data DESC;";
+            zapytanie.CommandText = "SELECT hu.nazwa, hu.status, hu.nr_rewizji, hu.nr_wydania, hu.nr_iteracji, wer.tresc, wer.uwagi, wer.udzialowcy, wer.data FROM Historyjki_uzytkownikow hu, Wersje_historyjek wer WHERE hu.id=@historyjka_id AND wer.Historyjka_uzytkownika_id = hu.id ORDER BY wer.data DESC;";
+            zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
 
             SqlDataReader reader;
             reader = zapytanie.ExecuteReader();
@@ -116,7 +117,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wer.id, wer.data, u.imie, u.nazwisko, u.login FROM Wersje_historyjek wer, Uzytkownicy u WHERE wer.Historyjka_uzytkownika_id='" + historyjka_id + "' AND u.id = wer.Uzytkownik_id ORDER BY wer.data DESC";
+            zapytanie.CommandText = "SELECT wer.id, wer.data, u.imie, u.nazwisko, u.login FROM Wersje_historyjek wer, Uzytkownicy u WHERE wer.Historyjka_uzytkownika_id=@historyjka_id AND u.id = wer.Uzytkownik_id ORDER BY wer.data DESC";
+            zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {
@@ -139,7 +141,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wer.tresc, wer.uwagi, wer.udzialowcy FROM Wersje_historyjek wer WHERE wer.id='" + wersje_DropDownList.SelectedValue + "'";
+            zapytanie.CommandText = "SELECT wer.tresc, wer.uwagi, wer.udzialowcy FROM Wersje_historyjek wer WHERE wer.id=@wersje_DropDownList.SelectedValue";
+            zapytanie.Parameters.AddWithValue("@wersje_DropDownList.SelectedValue", wersje_DropDownList.SelectedValue);
 
             SqlDataReader reader;
             reader = zapytanie.ExecuteReader();
@@ -163,7 +166,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Historyjki_uzytkownikow SET Iteracje_id = NULL, nr_iteracji = NULL, nr_wydania = NULL WHERE id='" + historyjka_id + "';";
+            zapytanie.CommandText = "UPDATE Historyjki_uzytkownikow SET Iteracje_id = NULL, nr_iteracji = NULL, nr_wydania = NULL WHERE id=@historyjka_id ;";
+            zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -222,13 +226,24 @@ namespace Tracktracer
                         SqlCommand zapytanie = new SqlCommand();
                         zapytanie.Connection = conn;
                         zapytanie.CommandType = CommandType.Text;
-                        zapytanie.CommandText = "INSERT INTO Wersje_historyjek (Historyjka_uzytkownika_id, tresc, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + historyjka_id + "', '" + tresc + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";
+                        zapytanie.CommandText = "INSERT INTO Wersje_historyjek (Historyjka_uzytkownika_id, tresc, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES (@historyjka_id , @tresc , @uwagi , @udzialowcy , @user_id , @akt_rewizja );";
+                        zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
+                        zapytanie.Parameters.AddWithValue("@tresc", tresc);
+                        zapytanie.Parameters.AddWithValue("@uwagi", uwagi);
+                        zapytanie.Parameters.AddWithValue("@udzialowcy", udzialowcy);
+                        zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                        zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
                         zapytanie.ExecuteNonQuery();
 
-                        zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status='Do weryfikacji' WHERE Historyjka_uzytkownika_id='" + historyjka_id + "';";
+                        
+                        zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status='Do weryfikacji' WHERE Historyjka_uzytkownika_id=@historyjka_id;";
+                        zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
+                       
+
                         zapytanie.ExecuteNonQuery();
 
-                        zapytanie.CommandText = "UPDATE Przypadki_testowe SET status='Do weryfikacji' WHERE Zadanie_programistyczne_id IN (SELECT z.id FROM Zadania_programistyczne z WHERE z.Historyjka_uzytkownika_id='" + historyjka_id + "');";
+                        zapytanie.CommandText = "UPDATE Przypadki_testowe SET status='Do weryfikacji' WHERE Zadanie_programistyczne_id IN (SELECT z.id FROM Zadania_programistyczne z WHERE z.Historyjka_uzytkownika_id=@historyjka_id );";
+                        zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);                   
                         zapytanie.ExecuteNonQuery();
 
                         GridView1.DataBind();
@@ -312,15 +327,19 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Historyjki_uzytkownikow SET status = '" + operacja + "', Iteracje_id = NULL, nr_wydania = NULL, nr_iteracji = NULL WHERE id = '" + historyjka_id + "'";
+            zapytanie.CommandText = "UPDATE Historyjki_uzytkownikow SET status = @operacja , Iteracje_id = NULL, nr_wydania = NULL, nr_iteracji = NULL WHERE id = '" + historyjka_id + "'";
+            zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
+            zapytanie.Parameters.AddWithValue("@operacja", operacja); 
             try
             {
                 zapytanie.ExecuteNonQuery();
 
-                zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status = 'Do weryfikacji', Realizator1_id = NULL, Realizator2_id = NULL WHERE Historyjka_uzytkownika_id = '" + historyjka_id + "'";
+                zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status = 'Do weryfikacji', Realizator1_id = NULL, Realizator2_id = NULL WHERE Historyjka_uzytkownika_id =@historyjka_id";
+                zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
                 zapytanie.ExecuteNonQuery();
 
-                zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id IN (SELECT id FROM Zadania_programistyczne WHERE Historyjka_uzytkownika_id = '" + historyjka_id + "') ";
+                zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id IN (SELECT id FROM Zadania_programistyczne WHERE Historyjka_uzytkownika_id =@historyjka_id) ";
+                zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
                 zapytanie.ExecuteNonQuery();
 
                 status = operacja;                

@@ -124,12 +124,14 @@ namespace Tracktracer
 
             if (mod_status.CompareTo("aktywne") == 0)
             {
-                zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='zablokowane' WHERE login='" + mod_user + "';";
+                zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='zablokowane' WHERE login=@mod_user;";
+                zapytanie.Parameters.AddWithValue("@mod_user", mod_user);
             }
             else
             {
 
-                zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='aktywne' WHERE login='" + mod_user + "';";
+                zapytanie.CommandText = "UPDATE Uzytkownicy SET status_konta='aktywne' WHERE login=@mod_user;";
+                zapytanie.Parameters.AddWithValue("@mod_user", mod_user);
             }
 
             try
@@ -167,7 +169,9 @@ namespace Tracktracer
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
 
-            zapytanie.CommandText = "UPDATE Uzytkownicy SET haslo='" + new_pass + "' WHERE login='" + mod_user + "';";
+            zapytanie.CommandText = "UPDATE Uzytkownicy SET haslo=@new_pass WHERE login=@mod_user;";
+            zapytanie.Parameters.AddWithValue("@mod_user", mod_user);
+            zapytanie.Parameters.AddWithValue("@new_pass", new_pass);
             haslo_Label.Text = "Hasło zostało zmienione";
             haslo_Label.Visible = true;            
             try

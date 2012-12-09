@@ -39,7 +39,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT p.rewizja FROM Projekty p WHERE p.id = '" + projekt_id + "'";
+            zapytanie.CommandText = "SELECT p.rewizja FROM Projekty p WHERE p.id = @projekt_id";
+            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
             try
             {
                 akt_rewizja = (Int32)zapytanie.ExecuteScalar();                
@@ -74,7 +75,12 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "INSERT INTO Zadania_programistyczne (nazwa, status, nr_rewizji, Projekty_id, Historyjka_uzytkownika_id, Realizator1_id) VALUES ('" + nazwa_zadania + "','Aktywne','" + akt_rewizja + "','" + projekt_id + "', '" + historyjka_id + "', '" + user_id + "');";
+                zapytanie.CommandText = "INSERT INTO Zadania_programistyczne (nazwa, status, nr_rewizji, Projekty_id, Historyjka_uzytkownika_id, Realizator1_id) VALUES (@nazwa_zadania , 'Aktywne' , @akt_rewizja , @projekt_id , @historyjka_id , @user_id );";
+                zapytanie.Parameters.AddWithValue("@nazwa_zadania", nazwa_zadania);
+                zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
                 zapytanie.Transaction = trans;
 
                 try
@@ -88,7 +94,12 @@ namespace Tracktracer
                     string udzialowcy = reader.GetString(1);
                     reader.Close();
 
-                    zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (tresc_Zadania, nr_rewizji, Zadanie_programistyczne_id, Uzytkownik_id) VALUES ('" + tresc + "', '" + akt_rewizja + "', '" + zad_id + "', '" + user_id + "');";
+                    zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (tresc_Zadania, nr_rewizji, Zadanie_programistyczne_id, Uzytkownik_id) VALUES (@tresc , @akt_rewizja , @zad_id , @user_id );";
+                    zapytanie.Parameters.AddWithValue("@tresc", tresc);
+                    zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
+                    zapytanie.Parameters.AddWithValue("@zad_id", zad_id);
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
+
                     zapytanie.ExecuteNonQuery();                    
 
                     trans.Commit();

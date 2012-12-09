@@ -85,7 +85,11 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "INSERT INTO Historyjki_uzytkownikow (nazwa, status, nr_rewizji, Projekty_id) VALUES ('" + nazwa + "','Aktywna','" + akt_rewizja + "','" + projekt_id + "');";
+                zapytanie.CommandText = "INSERT INTO Historyjki_uzytkownikow (nazwa, status, nr_rewizji, Projekty_id) VALUES (@nazwa,'Aktywna', @akt_rewizja ,@projekt_id);";
+                zapytanie.Parameters.AddWithValue("@nazwa", nazwa);
+                zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+             
                 zapytanie.Transaction = trans;
 
                 try
@@ -93,10 +97,18 @@ namespace Tracktracer
                     zapytanie.ExecuteNonQuery();
 
                     zapytanie.CommandType = CommandType.Text;
-                    zapytanie.CommandText = "SELECT hu.id FROM Historyjki_uzytkownikow hu WHERE hu.Projekty_id ='" + projekt_id + "' ORDER BY hu.id DESC;";
+                    zapytanie.CommandText = "SELECT hu.id FROM Historyjki_uzytkownikow hu WHERE hu.Projekty_id =@projekt_id ORDER BY hu.id DESC;";
+                    zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+
                     historyjka_id = (Int32)zapytanie.ExecuteScalar();                    
 
-                    zapytanie.CommandText = "INSERT INTO Wersje_historyjek (Historyjka_uzytkownika_id, tresc, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + historyjka_id + "', '" + tresc + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";
+                    zapytanie.CommandText = "INSERT INTO Wersje_historyjek (Historyjka_uzytkownika_id, tresc, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES (@historyjka_id , @tresc , @uwagi , @udzialowcy , @user_id , @akt_rewizja);";
+                    zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
+                    zapytanie.Parameters.AddWithValue("@tresc", tresc);
+                    zapytanie.Parameters.AddWithValue("@uwagi", uwagi);
+                    zapytanie.Parameters.AddWithValue("@udzialowcy", udzialowcy);
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                    zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
                     zapytanie.ExecuteNonQuery();
 
                     trans.Commit();

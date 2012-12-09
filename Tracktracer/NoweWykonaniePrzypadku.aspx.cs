@@ -99,11 +99,18 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "INSERT INTO Wykonanie_przypadku (wynik, komentarz, Przypadek_testowy_id, Uzytkownik_id) VALUES ('" + wynik + "', '" + komentarz + "', '" + przypadek_id + "', '" + user_id + "')";
+                zapytanie.CommandText = "INSERT INTO Wykonanie_przypadku (wynik, komentarz, Przypadek_testowy_id, Uzytkownik_id) VALUES ( @wynik , @komentarz , @przypadek_id , @user_id )";
+                zapytanie.Parameters.AddWithValue("@wynik", wynik);
+                zapytanie.Parameters.AddWithValue("@komentarz", komentarz);
+                zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
+
                 try
                 {
                     zapytanie.ExecuteNonQuery();
-                    zapytanie.CommandText = "UPDATE Przypadki_testowe SET status='" + wynik + "' WHERE id = '" + przypadek_id + "'";
+                    zapytanie.CommandText = "UPDATE Przypadki_testowe SET status=@wynik + WHERE id =@przypadek_id ";
+                    zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
+                    zapytanie.Parameters.AddWithValue("@wynik", wynik);
                     zapytanie.ExecuteNonQuery();
                 }
                 catch { }            

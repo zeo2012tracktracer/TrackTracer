@@ -49,19 +49,28 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();            
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "INSERT INTO Projekty (nazwa, opis, metodyka, wlasciciel) VALUES ('" + nazwa + "', '" + opis + "', '" + metodyka + "', '" + user_id + "');";           
+            zapytanie.CommandText = "INSERT INTO Projekty (nazwa, opis, metodyka, wlasciciel) VALUES (@nazwa , @opis , @metodyka , @user_id );";
+            zapytanie.Parameters.AddWithValue("@nazwa", nazwa);
+            zapytanie.Parameters.AddWithValue("@opis", opis);
+            zapytanie.Parameters.AddWithValue("@metodyka", metodyka);
+            zapytanie.Parameters.AddWithValue("@user_id", user_id);
             
             try
             {
                 zapytanie.ExecuteNonQuery();                
 
-                zapytanie.CommandText = "SELECT id FROM Projekty WHERE wlasciciel='" + user_id + "' ORDER BY id DESC;";
+                zapytanie.CommandText = "SELECT id FROM Projekty WHERE wlasciciel=@user_id ORDER BY id DESC;";
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
+            
                 SqlDataReader reader = zapytanie.ExecuteReader();
                 reader.Read();
                 int proj_id = reader.GetInt32(0);
                 reader.Close();
 
-                zapytanie.CommandText = "INSERT INTO Uzytkownicy_Projekty (Uzytkownik_id, Projekt_id) VALUES ('" + user_id + "', '" + proj_id + "');";
+                zapytanie.CommandText = "INSERT INTO Uzytkownicy_Projekty (Uzytkownik_id, Projekt_id) VALUES (@user_id , @proj_id );";
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                zapytanie.Parameters.AddWithValue("@proj_id", proj_id);
+            
                 zapytanie.ExecuteNonQuery();                 
             }
             catch

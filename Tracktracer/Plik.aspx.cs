@@ -80,7 +80,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT p.rewizja, p.svn_url, p.svn_user, p.svn_pass FROM Projekty p WHERE p.id = '" + projekt_id + "';";
+            zapytanie.CommandText = "SELECT p.rewizja, p.svn_url, p.svn_user, p.svn_pass FROM Projekty p WHERE p.id =@projekt_id ;";
+            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
 
             SqlDataReader reader;
             reader = zapytanie.ExecuteReader();
@@ -154,7 +155,9 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT hp.nr_rewizji, hp.stara_sciezka FROM Historia_plikow hp WHERE hp.Pliki_id = '"+ id_pliku +"' AND hp.nr_rewizji > '"+ rev1 +"' AND hp.stara_sciezka IS NOT NULL ORDER BY nr_rewizji ASC";
+                zapytanie.CommandText = "SELECT hp.nr_rewizji, hp.stara_sciezka FROM Historia_plikow hp WHERE hp.Pliki_id =@id_pliku AND hp.nr_rewizji > @rev1 AND hp.stara_sciezka IS NOT NULL ORDER BY nr_rewizji ASC";
+                zapytanie.Parameters.AddWithValue("@id_pliku", id_pliku);
+                zapytanie.Parameters.AddWithValue("@rev1", rev1);
 
                 SqlDataReader reader;
                 reader = zapytanie.ExecuteReader();
@@ -177,7 +180,8 @@ namespace Tracktracer
 
                     if(rev_found <= Convert.ToInt32(rev2))
                     {
-                        zapytanie.CommandText = "SELECT sciezka FROM Pliki WHERE id='"+ id_pliku +"';";
+                        zapytanie.CommandText = "SELECT sciezka FROM Pliki WHERE id=@id_pliku ;";
+                        zapytanie.Parameters.AddWithValue("@id_pliku", id_pliku);
                         reader = zapytanie.ExecuteReader();
                         reader.Read();
                         rev2_path = reader.GetString(0);
@@ -186,7 +190,8 @@ namespace Tracktracer
                 }
                 reader.Close();
                                                                     
-                zapytanie.CommandText = "SELECT sciezka FROM Pliki WHERE id='" + id_pliku + "';";                    
+                zapytanie.CommandText = "SELECT sciezka FROM Pliki WHERE id=@id_pliku ;";
+                zapytanie.Parameters.AddWithValue("@id_pliku", id_pliku);   
                 reader = zapytanie.ExecuteReader();
                 reader.Read();
                 f_path = reader.GetString(0);                    

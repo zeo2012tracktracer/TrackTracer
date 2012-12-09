@@ -69,5 +69,10 @@ namespace Tracktracer
                 conn.Close();
             }            
         }
+
+        protected void ButtonRegister_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

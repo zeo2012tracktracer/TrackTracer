@@ -40,7 +40,12 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "INSERT INTO Uzytkownicy (login, haslo, imie, nazwisko, status_konta) VALUES ('" + login + "', '" + haslo + "', '" + imie + "', '" + nazwisko + "', 'aktywne');";           
+            zapytanie.CommandText = "INSERT INTO Uzytkownicy (login, haslo, imie, nazwisko, status_konta) VALUES (@login , @haslo , @imie , @nazwisko , 'aktywne');";
+            zapytanie.Parameters.AddWithValue("@login", login);
+            zapytanie.Parameters.AddWithValue("@haslo", haslo);
+            zapytanie.Parameters.AddWithValue("@imie", imie);
+            zapytanie.Parameters.AddWithValue("@nazwisko", nazwisko);
+            zapytanie.Parameters.AddWithValue("@login", login);
 
             try
             {

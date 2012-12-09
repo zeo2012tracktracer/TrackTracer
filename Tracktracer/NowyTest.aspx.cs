@@ -55,11 +55,21 @@ namespace Tracktracer
                 zapytanie.CommandType = CommandType.Text;
                 if (((string)Session["back"]).CompareTo("Wymaganie.aspx") == 0)
                 {
-                    zapytanie.CommandText = "INSERT INTO Przypadki_testowe (nazwa, opis, Uzytkownik_id, Wymaganie_id, Projekty_id) VALUES ('" + nazwa_PT + "', '" + opis_PT + "', '" + user_id + "','" + (string)Session["wymaganie_id"] + "','" + projekt_id + "')";
+                    zapytanie.CommandText = "INSERT INTO Przypadki_testowe (nazwa, opis, Uzytkownik_id, Wymaganie_id, Projekty_id) VALUES (@nazwa_PT , @opis_PT , @user_id , @stringSessionWymaganie , @projekt_id )";
+                    zapytanie.Parameters.AddWithValue("@nazwa_PT", nazwa_PT);
+                    zapytanie.Parameters.AddWithValue("@opis_PT", opis_PT);
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                    zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                    zapytanie.Parameters.AddWithValue("@stringSessionWymaganie", (string)Session["wymaganie_id"]);
                 }
                 else
                 {
-                    zapytanie.CommandText = "INSERT INTO Przypadki_testowe (nazwa, opis, Uzytkownik_id, Zadanie_programistyczne_id, Projekty_id) VALUES ('" + nazwa_PT + "', '" + opis_PT + "', '" + user_id + "','" + (string)Session["zadanie_id"] + "','" + projekt_id + "')";
+                    zapytanie.CommandText = "INSERT INTO Przypadki_testowe (nazwa, opis, Uzytkownik_id, Zadanie_programistyczne_id, Projekty_id) VALUES (@nazwa_PT , @opis_PT , @user_id ,@stringSessionZadanie , @projekt_id )";
+                    zapytanie.Parameters.AddWithValue("@nazwa_PT", nazwa_PT);
+                    zapytanie.Parameters.AddWithValue("@opis_PT", opis_PT);
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                    zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                    zapytanie.Parameters.AddWithValue("@stringSessionZadanie", (string)Session["zadanie_id"]);
                 }
 
                 try

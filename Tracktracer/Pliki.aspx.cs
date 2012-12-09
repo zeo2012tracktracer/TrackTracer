@@ -71,7 +71,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT p.svn_url, p.svn_user, p.svn_pass, p.rewizja FROM Projekty p WHERE p.id = '" + projekt_id + "';";
+            zapytanie.CommandText = "SELECT p.svn_url, p.svn_user, p.svn_pass, p.rewizja FROM Projekty p WHERE p.id =@projekt_id ;";
+            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
 
             SqlDataReader reader;
             reader = zapytanie.ExecuteReader();
@@ -286,40 +287,52 @@ namespace Tracktracer
                             if (string.IsNullOrEmpty(fo.old_path) == false)
                             {
                                 fo.old_path.Trim();
-                                sql = "UPDATE Pliki SET nazwa ='" + fo.name + "', sciezka='" + fo.path + "' WHERE sciezka='" + fo.old_path + "' AND Projekty_id ='" + projekt_id + "';";
-                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, stara_sciezka, Pliki_id) SELECT 'Zmodyfikowano', '" + fo.rew + "', '" + fo.old_path + "', p.id FROM Pliki p WHERE p.Projekty_id = '" + projekt_id + "' AND p.sciezka = '" + fo.path + "';";
+                                sql = "UPDATE Pliki SET nazwa =@foname , sciezka=@fopath WHERE sciezka=@foold_path AND Projekty_id =@projekt_id ;";
+                                
+                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, stara_sciezka, Pliki_id) SELECT 'Zmodyfikowano', @fo.rew , @foold_path , p.id FROM Pliki p WHERE p.Projekty_id =@projekt_id AND p.sciezka =@fopath ;";
                             }
                             else
                             {
-                                sql = "INSERT INTO Pliki (nazwa, sciezka, Projekty_id) VALUES ('" + fo.name + "', '" + fo.path + "', '" + projekt_id + "');";
-                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, Pliki_id) SELECT 'Dodano', '" + fo.rew + "', p.id FROM Pliki p WHERE p.Projekty_id = '" + projekt_id + "' AND p.sciezka = '" + fo.path + "';";
+                                sql = "INSERT INTO Pliki (nazwa, sciezka, Projekty_id) VALUES (@foname , @fo.path , @projekt_id );";
+                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, Pliki_id) SELECT 'Dodano', @fo.rew , p.id FROM Pliki p WHERE p.Projekty_id =@projekt_id AND p.sciezka =@fopath ;";
                             }
                         }
                         else if (fo.op.CompareTo("D") == 0)// operacja usunięcia
                         {
-                            sql = "DELETE FROM Pliki WHERE Projekty_id='" + projekt_id + "' AND sciezka='" + fo.path + "'";
+                            sql = "DELETE FROM Pliki WHERE Projekty_id=@projekt_id AND sciezka=@fopath ";
                             sql2 = string.Empty;
                         }
                         else
                         {
-                            sql = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, Pliki_id) SELECT 'Zmodyfikowano', '" + fo.rew + "', p.id FROM Pliki p WHERE p.Projekty_id = '" + projekt_id + "' AND p.sciezka = '" + fo.path + "';";
+                            sql = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, Pliki_id) SELECT 'Zmodyfikowano', @forew , p.id FROM Pliki p WHERE p.Projekty_id =@projekt_id AND p.sciezka =@fopath ;";
                             sql2 = string.Empty;
                         }
 
                         System.Diagnostics.Debug.WriteLine(sql);
 
                         zapytanie.CommandText = sql;
+                        zapytanie.Parameters.AddWithValue("@foname",fo.name);
+                        zapytanie.Parameters.AddWithValue("@fopath", fo.path);
+                        zapytanie.Parameters.AddWithValue("@foold_path", fo.old_path);
+                        zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+
                         zapytanie.ExecuteNonQuery();
 
                         if (string.IsNullOrEmpty(sql2) == false)
                         {
                             zapytanie.CommandText = sql2;
+                            zapytanie.Parameters.AddWithValue("@foname", fo.rew);
+                            zapytanie.Parameters.AddWithValue("@fopath", fo.path);
+                            zapytanie.Parameters.AddWithValue("@foold_path", fo.old_path);
+                            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
                             zapytanie.ExecuteNonQuery();    
                         }
                     }
                 }
 
-                zapytanie.CommandText = "UPDATE Projekty SET rewizja='" + rew + "' WHERE id='" + projekt_id + "';";
+                zapytanie.CommandText = "UPDATE Projekty SET rewizja=@rew WHERE id=@projekt_id ;";
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie.Parameters.AddWithValue("@rew", rew);
                 zapytanie.ExecuteNonQuery();
 
                 akt_rewizja = Convert.ToInt32(rew);

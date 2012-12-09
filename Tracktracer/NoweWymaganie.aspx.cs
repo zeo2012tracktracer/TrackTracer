@@ -32,7 +32,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT p.rewizja FROM Projekty p WHERE p.id = '" + projekt_id + "'";
+            zapytanie.CommandText = "SELECT p.rewizja FROM Projekty p WHERE p.id =@projekt_id";
+            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
 
             try
             {
@@ -91,7 +92,10 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "INSERT INTO Wymagania (nazwa, status, nr_rewizji, Projekty_id) VALUES ('" + nazwa + "','aktywne','" + akt_rewizja + "','" + projekt_id + "');";
+                zapytanie.CommandText = "INSERT INTO Wymagania (nazwa, status, nr_rewizji, Projekty_id) VALUES (@nazwa ,'aktywne', @akt_rewizja , @projekt_id );";
+                zapytanie.Parameters.AddWithValue("@nazwa", nazwa);
+                zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie.Transaction = trans;
                 
                 try
@@ -99,13 +103,20 @@ namespace Tracktracer
                     zapytanie.ExecuteNonQuery();
 
                     zapytanie.CommandType = CommandType.Text;
-                    zapytanie.CommandText = "SELECT w.id FROM Wymagania w WHERE w.Projekty_id ='" + projekt_id + "' ORDER BY w.id DESC;";
+                    zapytanie.CommandText = "SELECT w.id FROM Wymagania w WHERE w.Projekty_id =@projekt_id ORDER BY w.id DESC;";
+                    zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
                     reader = zapytanie.ExecuteReader();
                     reader.Read();
                     wym_id = reader.GetInt32(0);
                     reader.Close();
                                         
-                    zapytanie.CommandText = "INSERT INTO Wersje_wymagan (Wymaganie_id, opis, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES ('" + wym_id + "', '" + opis + "','" + uwagi + "', '" + udzialowcy + "', '" + user_id + "', '" + akt_rewizja + "');";                    
+                    zapytanie.CommandText = "INSERT INTO Wersje_wymagan (Wymaganie_id, opis, uwagi, udzialowcy, Uzytkownik_id, nr_rewizji) VALUES (@wym_id , @opis + , @uwagi , @udzialowcy , @user_id , @akt_rewizja );";
+                    zapytanie.Parameters.AddWithValue("@wym_id", wym_id);
+                    zapytanie.Parameters.AddWithValue("@opis", opis);
+                    zapytanie.Parameters.AddWithValue("@uwagi", uwagi);
+                    zapytanie.Parameters.AddWithValue("@udzialowcy", udzialowcy);
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                    zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
                     zapytanie.ExecuteNonQuery();
                     
                     trans.Commit();

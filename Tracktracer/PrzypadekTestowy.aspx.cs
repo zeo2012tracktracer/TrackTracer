@@ -57,7 +57,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT pt.nazwa, pt.status, pt.opis, pt.Wymaganie_id, pt.Zadanie_programistyczne_id, u.imie, u.nazwisko, u.login FROM Przypadki_testowe pt, Uzytkownicy u WHERE pt.id='" + przypadek_id + "' AND u.id = pt.Uzytkownik_id";
+            zapytanie.CommandText = "SELECT pt.nazwa, pt.status, pt.opis, pt.Wymaganie_id, pt.Zadanie_programistyczne_id, u.imie, u.nazwisko, u.login FROM Przypadki_testowe pt, Uzytkownicy u WHERE pt.id=@przypadek_id AND u.id = pt.Uzytkownik_id";
+            zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {
@@ -72,19 +73,20 @@ namespace Tracktracer
                 {
                     metodyka = "XP";
                     przedmiot_id = reader.GetInt32(4);
-                    sql = "SELECT nazwa FROM Zadania_programistyczne WHERE id = '" + przedmiot_id + "'";
+                    sql = "SELECT nazwa FROM Zadania_programistyczne WHERE id =@przedmiot_id";
                 }
                 else
                 {
                     metodyka = "Scrum";
                     przedmiot_id = reader.GetInt32(3);
-                    sql = "SELECT nazwa FROM Wymagania WHERE id = '" + przedmiot_id + "'";
+                    sql = "SELECT nazwa FROM Wymagania WHERE id =@przedmiot_id ";
                 }
                 autor_Label.Text = reader.GetString(5) + " " + reader.GetString(6) + " (login: " + reader.GetString(7) + ")";
                 
                 reader.Close();
 
                 zapytanie.CommandText = sql;
+                zapytanie.Parameters.AddWithValue("@przedmiot_id", przedmiot_id);
                 if (metodyka.CompareTo("Scrum") == 0)
                 {
                     przedmiot_Label.Text = "Testowane wymaganie: ";
@@ -140,7 +142,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = '" + status_DropDownList.SelectedValue.ToString() + "' WHERE id = '" + przypadek_id + "'";
+            zapytanie.CommandText = "UPDATE Przypadki_testowe SET status =@statusDrop WHERE id =@przypadek_id ";
+            zapytanie.Parameters.AddWithValue("@statusDrop", status_DropDownList.SelectedValue.ToString());
+            zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -236,7 +240,10 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Przypadki_testowe SET opis = '" + opis_TextBox.Text + "', status = 'Do weryfikacji' WHERE id = '" + przypadek_id + "'";
+                zapytanie.CommandText = "UPDATE Przypadki_testowe SET opis =@OpisText, status = 'Do weryfikacji' WHERE id =@przypadek_id ";
+                zapytanie.Parameters.AddWithValue("@OpisText", opis_TextBox.Text);
+                zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
+                
                 try
                 {
                     zapytanie.ExecuteNonQuery();
@@ -270,12 +277,14 @@ namespace Tracktracer
             zapytanie.Connection = conn;
             zapytanie.Transaction = trans;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "DELETE FROM Wykonanie_przypadku WHERE Przypadek_testowy_id = '" + przypadek_id + "'";
+            zapytanie.CommandText = "DELETE FROM Wykonanie_przypadku WHERE Przypadek_testowy_id =@przypadek_id ";
+            zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
             
             try
             {
                 zapytanie.ExecuteNonQuery();
-                zapytanie.CommandText = "DELETE FROM Przypadki_testowe WHERE id = '" + przypadek_id + "'";    
+                zapytanie.CommandText = "DELETE FROM Przypadki_testowe WHERE id =@przypadek_id ";
+                zapytanie.Parameters.AddWithValue("@przypadek_id", przypadek_id);
                 zapytanie.ExecuteNonQuery();
                 trans.Commit();
             }

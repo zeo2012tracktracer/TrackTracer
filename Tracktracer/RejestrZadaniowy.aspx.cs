@@ -72,7 +72,9 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Wymagania SET Uzytkownik_id = '" + user_id + "' WHERE id = '" + no + "'";
+                zapytanie.CommandText = "UPDATE Wymagania SET Uzytkownik_id =@user_id WHERE id =@no ";
+                zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                zapytanie.Parameters.AddWithValue("@no", no);
                 try
                 {
                     zapytanie.ExecuteNonQuery();
@@ -87,7 +89,8 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Wymagania SET Uzytkownik_id = NULL WHERE id = '" + no + "'";
+                zapytanie.CommandText = "UPDATE Wymagania SET Uzytkownik_id = NULL WHERE id =@no";
+                zapytanie.Parameters.AddWithValue("@no", no);
                 try
                 {
                     zapytanie.ExecuteNonQuery();

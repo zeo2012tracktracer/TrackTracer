@@ -45,7 +45,11 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "DELETE FROM Uzytkownicy_Projekty WHERE Projekt_id = " + proj_id + " AND Uzytkownik_id IN ( SELECT id FROM Uzytkownicy WHERE login ='" + login + "');";
+            zapytanie.CommandText = "DELETE FROM Uzytkownicy_Projekty WHERE Projekt_id =@proj_id AND Uzytkownik_id IN ( SELECT id FROM Uzytkownicy WHERE login =@login );";
+            zapytanie.Parameters.AddWithValue("@proj_id", proj_id);
+            zapytanie.Parameters.AddWithValue("@login", login);
+
+
 
             try
             {
@@ -57,7 +61,9 @@ namespace Tracktracer
             SqlCommand zapytanie2 = new SqlCommand();
             zapytanie2.Connection = conn;
             zapytanie2.CommandType = CommandType.Text;
-            zapytanie2.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt = NULL WHERE login='" + login + "' AND aktywny_projekt=" + proj_id + ";";
+            zapytanie2.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt = NULL WHERE login=@login AND aktywny_projekt=@proj_id ;";
+            zapytanie2.Parameters.AddWithValue("@proj_id", proj_id);
+            zapytanie2.Parameters.AddWithValue("@login", login);
 
             try
             {
@@ -76,7 +82,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "INSERT INTO Uzytkownicy_Projekty (Uzytkownik_id, Projekt_id) SELECT u.id, p.id FROM Uzytkownicy u, Projekty p WHERE u.login ='" + login + "' AND p.id='" + proj_id + "';";
+            zapytanie.CommandText = "INSERT INTO Uzytkownicy_Projekty (Uzytkownik_id, Projekt_id) SELECT u.id, p.id FROM Uzytkownicy u, Projekty p WHERE u.login =@login AND p.id=@proj_id ;";
+            zapytanie.Parameters.AddWithValue("@proj_id", proj_id);
+            zapytanie.Parameters.AddWithValue("@login", login);
 
             try
             {

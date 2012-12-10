@@ -139,8 +139,8 @@ namespace Tracktracer
                 zapytanie2.Connection = conn;
                 zapytanie2.CommandType = CommandType.Text;
                 zapytanie2.CommandText = "INSERT INTO Wydania (nr_wydania, Projekty_id) VALUES (@akt_wyd , @projekt_id );";
-                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
-                zapytanie.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie2.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie2.Parameters.AddWithValue("@akt_wyd", akt_wyd);
                 zapytanie2.Transaction = trans;
                 zapytanie2.ExecuteNonQuery();
 
@@ -148,8 +148,8 @@ namespace Tracktracer
                 zapytanie3.Connection = conn;
                 zapytanie3.CommandType = CommandType.Text;
                 zapytanie3.CommandText = "UPDATE Projekty SET aktualne_wydanie=@akt_wyd WHERE id=@projekt_id ;";
-                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
-                zapytanie.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie3.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie3.Parameters.AddWithValue("@akt_wyd", akt_wyd);
                 zapytanie3.Transaction = trans;
                 zapytanie3.ExecuteNonQuery();
                 trans.Commit();

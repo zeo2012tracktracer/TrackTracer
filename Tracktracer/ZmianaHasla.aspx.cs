@@ -40,7 +40,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Uzytkownicy SET haslo='" + haslo + "' WHERE id='" + user_id + "';";
+            zapytanie.CommandText = "UPDATE Uzytkownicy SET haslo=@haslo WHERE id=@user_id ;";
+            zapytanie.Parameters.AddWithValue("@haslo", haslo);
+            zapytanie.Parameters.AddWithValue("@user_id", user_id);
             
             try
             {

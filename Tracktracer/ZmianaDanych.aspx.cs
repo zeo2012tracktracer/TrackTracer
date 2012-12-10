@@ -27,7 +27,8 @@ namespace Tracktracer
                     SqlCommand zapytanie = new SqlCommand();
                     zapytanie.Connection = conn;
                     zapytanie.CommandType = CommandType.Text;
-                    zapytanie.CommandText = "SELECT imie, nazwisko FROM Uzytkownicy WHERE id ='" + user_id + "'";
+                    zapytanie.CommandText = "SELECT imie, nazwisko FROM Uzytkownicy WHERE id =@user_id ";
+                    zapytanie.Parameters.AddWithValue("@user_id", user_id);
                     SqlDataReader reader = zapytanie.ExecuteReader();
                     try
                     {
@@ -61,7 +62,11 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Uzytkownicy SET imie='" + imie + "', nazwisko='" + nazwisko + "' WHERE id='" + user_id + "';";          
+            zapytanie.CommandText = "UPDATE Uzytkownicy SET imie=@imie ,nazwisko=@nazwisko WHERE id=@user_id ;";
+            zapytanie.Parameters.AddWithValue("@imie", imie);
+            zapytanie.Parameters.AddWithValue("@nazwisko", nazwisko);
+            zapytanie.Parameters.AddWithValue("@user_id", user_id);
+
            
             try
             {

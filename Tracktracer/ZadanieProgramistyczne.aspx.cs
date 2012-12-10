@@ -58,7 +58,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT z.nazwa, z.status, z.nr_rewizji, h.nr_wydania, h.nr_iteracji, wer.tresc_Zadania, wer.data, h.id, h.nazwa FROM Zadania_programistyczne z, Wersje_zadan_programistycznych wer, Historyjki_uzytkownikow h WHERE z.id='" + zadanie_id + "' AND h.id = z.Historyjka_uzytkownika_id AND wer.Zadanie_programistyczne_id = z.id ORDER BY wer.data DESC;";
+            zapytanie.CommandText = "SELECT z.nazwa, z.status, z.nr_rewizji, h.nr_wydania, h.nr_iteracji, wer.tresc_Zadania, wer.data, h.id, h.nazwa FROM Zadania_programistyczne z, Wersje_zadan_programistycznych wer, Historyjki_uzytkownikow h WHERE z.id=@zadanie_id AND h.id = z.Historyjka_uzytkownika_id AND wer.Zadanie_programistyczne_id = z.id ORDER BY wer.data DESC;";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
 
             SqlDataReader reader;
             reader = zapytanie.ExecuteReader();
@@ -134,7 +135,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wer.id, wer.data, u.imie, u.nazwisko, u.login FROM Wersje_zadan_programistycznych wer, Uzytkownicy u WHERE wer.Zadanie_programistyczne_id='" + zadanie_id + "' AND u.id = wer.Uzytkownik_id ORDER BY wer.data DESC";
+            zapytanie.CommandText = "SELECT wer.id, wer.data, u.imie, u.nazwisko, u.login FROM Wersje_zadan_programistycznych wer, Uzytkownicy u WHERE wer.Zadanie_programistyczne_id=@zadanie_id AND u.id = wer.Uzytkownik_id ORDER BY wer.data DESC";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {
@@ -176,7 +178,8 @@ namespace Tracktracer
                 zapytanie.ExecuteNonQuery();
                 if (operacja.CompareTo("Aktywne") == 0 && status.CompareTo("Usunięte") == 0)
                 {
-                    zapytanie.CommandText = "SELECT wh.udzialowcy FROM Wersje_historyjek wh WHERE wh.Historyjka_uzytkownika_id='" + historyjka_id + "'";
+                    zapytanie.CommandText = "SELECT wh.udzialowcy FROM Wersje_historyjek wh WHERE wh.Historyjka_uzytkownika_id=@historyjka_id ";
+                    zapytanie.Parameters.AddWithValue("@historyjka_id", historyjka_id);
                       
                 }
                 status = operacja;
@@ -195,7 +198,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wer.tresc_Zadania FROM Wersje_zadan_programistycznych wer WHERE wer.id='" + wersje_DropDownList.SelectedValue + "'";                        
+            zapytanie.CommandText = "SELECT wer.tresc_Zadania FROM Wersje_zadan_programistycznych wer WHERE wer.id=@wersje_DropDownList";
+            zapytanie.Parameters.AddWithValue("@wersje_DropDownList", wersje_DropDownList.SelectedValue);
+                                  
             
             try
             {                
@@ -231,11 +236,17 @@ namespace Tracktracer
                         SqlCommand zapytanie = new SqlCommand();
                         zapytanie.Connection = conn;
                         zapytanie.CommandType = CommandType.Text;
-                        zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (Zadanie_programistyczne_id, tresc_Zadania, Uzytkownik_id, nr_rewizji) VALUES ('" + zadanie_id + "', '" + tresc + "', '" + user_id + "', '" + akt_rewizja + "');";
+                        zapytanie.CommandText = "INSERT INTO Wersje_zadan_programistycznych (Zadanie_programistyczne_id, tresc_Zadania, Uzytkownik_id, nr_rewizji) VALUES (@zadanie_id ,@tresc ,@user_id ,@akt_rewizja );";
+                        zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
+                        zapytanie.Parameters.AddWithValue("@tresc", tresc);
+                        zapytanie.Parameters.AddWithValue("@user_id", user_id);
+                        zapytanie.Parameters.AddWithValue("@akt_rewizja", akt_rewizja);
                         zapytanie.ExecuteNonQuery();
-                        zapytanie.CommandText = "UPDATE Zadania_programistyczne SET wersja = wersja + 1 WHERE id = '" + zadanie_id + "'";
+                        zapytanie.CommandText = "UPDATE Zadania_programistyczne SET wersja = wersja + 1 WHERE id =@zadanie_id ";
+                        zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
                         zapytanie.ExecuteNonQuery();
-                        zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id = '" + zadanie_id + "'";
+                        zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id =@zadanie_id ";
+                        zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
                         zapytanie.ExecuteNonQuery();
 
                         
@@ -264,7 +275,9 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "DELETE FROM Powiazane_zadania WHERE (Zadanie1_id = '" + zadanie_id + "' AND Zadanie2_id='" + no + "') OR (Zadanie1_id = '" + no + "' AND Zadanie2_id='" + zadanie_id + "')";
+                zapytanie.CommandText = "DELETE FROM Powiazane_zadania WHERE (Zadanie1_id =@zadanie_id AND Zadanie2_id=@no ) OR (Zadanie1_id =@no AND Zadanie2_id=@zadanie_id )";
+                zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
+                zapytanie.Parameters.AddWithValue("@no", no);
                 try
                 {
                     zapytanie.ExecuteNonQuery();
@@ -311,7 +324,8 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT Realizator1_id FROM Zadania_programistyczne WHERE id = '" + zadanie_id + "'";
+                zapytanie.CommandText = "SELECT Realizator1_id FROM Zadania_programistyczne WHERE id =@zadanie_id ";
+                zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
                 SqlDataReader reader = zapytanie.ExecuteReader();
                 try
                 {
@@ -319,14 +333,16 @@ namespace Tracktracer
                     reader.Read();
                     if (reader.IsDBNull(0))
                     {
-                        sql = "UPDATE Zadania_programistyczne SET Realizator1_id = '" + no + "' WHERE id = '" + zadanie_id + "'";
+                        sql = "UPDATE Zadania_programistyczne SET Realizator1_id =@no WHERE id =@zadanie_id ";
                     }
                     else
                     {
-                        sql = "UPDATE Zadania_programistyczne SET Realizator2_id = '" + no + "' WHERE id = '" + zadanie_id + "'";
+                        sql = "UPDATE Zadania_programistyczne SET Realizator2_id =@no WHERE id =@zadanie_id ";
                     }
                     reader.Close();
                     zapytanie.CommandText = sql;
+                    zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
+                    zapytanie.Parameters.AddWithValue("@no", no);
                     zapytanie.ExecuteNonQuery();
                     ustaw_realizatorow();
                     GridView7.DataBind();
@@ -347,19 +363,30 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wersja FROM Zadania_programistyczne WHERE id = '" + zadanie_id + "'";
+            zapytanie.CommandText = "SELECT wersja FROM Zadania_programistyczne WHERE id =@zadanie_id ";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 Int32 wym_wersja = (Int32)zapytanie.ExecuteScalar();
-                zapytanie.CommandText = "SELECT wersja FROM Zadania_programistyczne WHERE id = '" + do_powiazania + "'";
+                zapytanie.CommandText = "SELECT wersja FROM Zadania_programistyczne WHERE id =@do_powiazania ";
+                zapytanie.Parameters.AddWithValue("@do_powiazania", do_powiazania);
                 Int32 do_pow_wersja = (Int32)zapytanie.ExecuteScalar();
                 if (string.IsNullOrEmpty(komentarz))
                 {
-                    zapytanie.CommandText = "INSERT INTO Powiazane_zadania (Zadanie1_id, wersja1, Zadanie2_id, wersja2, opis) VALUES ('" + zadanie_id + "', '" + wym_wersja + "','" + do_powiazania + "', '" + do_pow_wersja + "', NULL)";
+                    zapytanie.CommandText = "INSERT INTO Powiazane_zadania (Zadanie1_id, wersja1, Zadanie2_id, wersja2, opis) VALUES (@zadanie_id ,@wym_wersja ,@do_powiazania ,@do_pow_wersja , NULL)";
+                    zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
+                    zapytanie.Parameters.AddWithValue("@wym_wersja", wym_wersja);
+                    zapytanie.Parameters.AddWithValue("@do_powiazania", do_powiazania);
+                    zapytanie.Parameters.AddWithValue("@do_pow_wersja", do_pow_wersja);
                 }
                 else
                 {
-                    zapytanie.CommandText = "INSERT INTO Powiazane_zadania (Zadanie1_id, wersja1, Zadanie2_id, wersja2, opis) VALUES ('" + zadanie_id + "', '" + wym_wersja + "','" + do_powiazania + "', '" + do_pow_wersja + "', '" + komentarz + "')";
+                    zapytanie.CommandText = "INSERT INTO Powiazane_zadania (Zadanie1_id, wersja1, Zadanie2_id, wersja2, opis) VALUES (@zadanie_id ,@wym_wersja ,@do_powiazania ,@do_pow_wersja ,@komentarz )";
+                    zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
+                    zapytanie.Parameters.AddWithValue("@wym_wersja", wym_wersja);
+                    zapytanie.Parameters.AddWithValue("@do_powiazania", do_powiazania);
+                    zapytanie.Parameters.AddWithValue("@do_pow_wersja", do_pow_wersja);
+                    zapytanie.Parameters.AddWithValue("@komentarz", komentarz);
                 }
 
                 zapytanie.ExecuteNonQuery();
@@ -378,7 +405,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "DELETE FROM Pliki_zadania_programistyczne WHERE Plik_id = '" + plik_do_usuniecia + "' AND Zadanie_programistyczne_id='" + zadanie_id + "'";
+            zapytanie.CommandText = "DELETE FROM Pliki_zadania_programistyczne WHERE Plik_id =@plik_do_usuniecia AND Zadanie_programistyczne_id=@zadanie_id ";
+            zapytanie.Parameters.AddWithValue("@plik_do_usuniecia", plik_do_usuniecia);
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -401,12 +430,14 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status = 'Usunięte', Realizator1_id = NULL, Realizator2_id = NULL WHERE id = '" + zadanie_id + "'";
+            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET status = 'Usunięte', Realizator1_id = NULL, Realizator2_id = NULL WHERE id =@zadanie_id ";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
 
-                zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id = '" + zadanie_id + "'";
+                zapytanie.CommandText = "UPDATE Przypadki_testowe SET status = 'Do weryfikacji' WHERE Zadanie_programistyczne_id =@zadanie_id ";
+                zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
                 zapytanie.ExecuteNonQuery();
                 status = "Usunięte";
             }
@@ -484,7 +515,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET Realizator1_id = NULL WHERE id = '" + zadanie_id + "'";
+            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET Realizator1_id = NULL WHERE id =@zadanie_id ";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -500,7 +532,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET Realizator2_id = NULL WHERE id = '" + zadanie_id + "'";
+            zapytanie.CommandText = "UPDATE Zadania_programistyczne SET Realizator2_id = NULL WHERE id =@zadanie_id ";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -516,7 +549,9 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "INSERT INTO Pliki_Zadania_programistyczne VALUES ('" + plik_do_powiazania + "','" + zadanie_id + "')";
+            zapytanie.CommandText = "INSERT INTO Pliki_Zadania_programistyczne VALUES (@plik_do_powiazania ,@zadanie_id )";
+            zapytanie.Parameters.AddWithValue("@plik_do_powiazania", plik_do_powiazania);
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             try
             {
                 zapytanie.ExecuteNonQuery();
@@ -534,7 +569,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT u.imie, u.nazwisko, u.login FROM Zadania_programistyczne z, Uzytkownicy u WHERE z.id='" + zadanie_id + "' AND u.id = z.Realizator1_id;";
+            zapytanie.CommandText = "SELECT u.imie, u.nazwisko, u.login FROM Zadania_programistyczne z, Uzytkownicy u WHERE z.id=@zadanie_id AND u.id = z.Realizator1_id;";
+            zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
             reader = zapytanie.ExecuteReader();
             try
             {
@@ -550,7 +586,8 @@ namespace Tracktracer
                     realizator1_LinkButton.Visible = false;
                 }
                 reader.Close();
-                zapytanie.CommandText = "SELECT u.imie, u.nazwisko, u.login FROM Zadania_programistyczne z, Uzytkownicy u WHERE z.id='" + zadanie_id + "' AND u.id = z.Realizator2_id;";
+                zapytanie.CommandText = "SELECT u.imie, u.nazwisko, u.login FROM Zadania_programistyczne z, Uzytkownicy u WHERE z.id=@zadanie_id AND u.id = z.Realizator2_id;";
+                zapytanie.Parameters.AddWithValue("@zadanie_id", zadanie_id);
                 reader = zapytanie.ExecuteReader();
                 if (reader.Read())
                 {

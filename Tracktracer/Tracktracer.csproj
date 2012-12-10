@@ -85,6 +85,7 @@
     <Content Include="PrzypadkiTestowe.aspx" />
     <Content Include="PrzypisaniUzytkownicy.aspx" />
     <Content Include="RejestrProduktowy.aspx" />
+    <Content Include="Rejestruj.aspx" />
     <Content Include="RejestrZadaniowy.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
@@ -309,6 +310,13 @@
     </Compile>
     <Compile Include="RejestrProduktowy.aspx.designer.cs">
       <DependentUpon>RejestrProduktowy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Rejestruj.aspx.cs">
+      <DependentUpon>Rejestruj.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Rejestruj.aspx.designer.cs">
+      <DependentUpon>Rejestruj.aspx</DependentUpon>
     </Compile>
     <Compile Include="RejestrZadaniowy.aspx.cs">
       <DependentUpon>RejestrZadaniowy.aspx</DependentUpon>

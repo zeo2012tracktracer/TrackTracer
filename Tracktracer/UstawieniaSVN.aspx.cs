@@ -40,7 +40,8 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT p.svn_url, p.svn_user FROM Projekty p WHERE p.id ='" + projekt_id + "';";
+                zapytanie.CommandText = "SELECT p.svn_url, p.svn_user FROM Projekty p WHERE p.id =@projekt_id ;";
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
 
                 SqlDataReader reader = zapytanie.ExecuteReader();
                 try
@@ -66,7 +67,11 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "UPDATE Projekty SET svn_url='" + url + "', svn_user='" + username + "', svn_pass='" + pass + "' WHERE id='" + projekt_id + "';";
+            zapytanie.CommandText = "UPDATE Projekty SET svn_url=@url , svn_user=@username , svn_pass=@pass WHERE id=@projekt_id ;";
+            zapytanie.Parameters.AddWithValue("@url", url);
+            zapytanie.Parameters.AddWithValue("@username", username);
+            zapytanie.Parameters.AddWithValue("@pass", pass);
+            zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
             zapytanie.ExecuteNonQuery();            
         }
 

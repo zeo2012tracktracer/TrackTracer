@@ -88,7 +88,11 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT i.cel_iteracji FROM Iteracje i, Wydania w WHERE w.Projekty_id = '" + projekt_id + "' AND w.nr_wydania = '" + wydanie + "' AND i.nr_iteracji ='" + iteracja + "' AND i.Wydania_id=w.id;";
+                zapytanie.CommandText = "SELECT i.cel_iteracji FROM Iteracje i, Wydania w WHERE w.Projekty_id =@projekt_id AND w.nr_wydania =@wydanie AND i.nr_iteracji =@iteracja AND i.Wydania_id=w.id;";
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie.Parameters.AddWithValue("@wydanie", wydanie);
+                zapytanie.Parameters.AddWithValue("@iteracja", iteracja);
+                
 
                 SqlDataReader reader;
                 reader = zapytanie.ExecuteReader();
@@ -135,7 +139,10 @@ namespace Tracktracer
                         zapytanie.Connection = conn;
                         zapytanie.Transaction = trans;
                         zapytanie.CommandType = CommandType.Text;
-                        zapytanie.CommandText = "SELECT i.id FROM Wydania w, Iteracje i WHERE w.Projekty_id='" + projekt_id + "' AND w.nr_wydania='" + wydanie + "' AND i.Wydania_id=w.id AND i.nr_iteracji ='" + iteracja + "';";
+                        zapytanie.CommandText = "SELECT i.id FROM Wydania w, Iteracje i WHERE w.Projekty_id=@projekt_id AND w.nr_wydania=@wydanie AND i.Wydania_id=w.id AND i.nr_iteracji =iteracja ;";
+                        zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                        zapytanie.Parameters.AddWithValue("@wydanie", wydanie);
+                        zapytanie.Parameters.AddWithValue("@iteracja", iteracja);
 
                         SqlDataReader reader = zapytanie.ExecuteReader();
                         try
@@ -154,14 +161,20 @@ namespace Tracktracer
                         zapytanie2.Connection = conn;
                         zapytanie2.Transaction = trans;
                         zapytanie2.CommandType = CommandType.Text;
-                        zapytanie2.CommandText = "UPDATE Wymagania SET Iteracje_id='" + i_id + "', nr_iteracji='" + iteracja + "', nr_wydania='" + wydanie + "' WHERE id='" + i + "'";
+                        zapytanie2.CommandText = "UPDATE Wymagania SET Iteracje_id=@i_id , nr_iteracji=@iteracja , nr_wydania=@wydanie WHERE id=@i ";
+                        zapytanie2.Parameters.AddWithValue("@i_id", i_id);
+                        zapytanie2.Parameters.AddWithValue("@iteracja", iteracja);
+                        zapytanie2.Parameters.AddWithValue("@wydanie", wydanie);
+                        zapytanie2.Parameters.AddWithValue("@i", i);
                         zapytanie2.ExecuteNonQuery();
 
                         SqlCommand zapytanie3 = new SqlCommand();
                         zapytanie3.Connection = conn;
                         zapytanie3.Transaction = trans;
                         zapytanie3.CommandType = CommandType.Text;
-                        zapytanie3.CommandText = "INSERT INTO Iteracje_Wymagania VALUES(" + i_id + ", " + i + ")";
+                        zapytanie3.CommandText = "INSERT INTO Iteracje_Wymagania VALUES(@i_id , @i)";
+                        zapytanie3.Parameters.AddWithValue("@i_id", i_id);
+                        zapytanie3.Parameters.AddWithValue("@i", i);
                         zapytanie3.ExecuteNonQuery();
                     }
                     trans.Commit();
@@ -195,7 +208,11 @@ namespace Tracktracer
                         zapytanie.Connection = conn;
                         zapytanie.Transaction = trans;
                         zapytanie.CommandType = CommandType.Text;
-                        zapytanie.CommandText = "SELECT i.id FROM Wydania w, Iteracje i WHERE w.Projekty_id='" + projekt_id + "' AND w.nr_wydania='" + wydanie + "' AND i.Wydania_id=w.id AND i.nr_iteracji ='" + iteracja + "';";
+                        zapytanie.CommandText = "SELECT i.id FROM Wydania w, Iteracje i WHERE w.Projekty_id=@projekt_id AND w.nr_wydania=@wydanie AND i.Wydania_id=w.id AND i.nr_iteracji =@iteracja ;";
+                        zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                        zapytanie.Parameters.AddWithValue("@wydanie", wydanie);
+                        zapytanie.Parameters.AddWithValue("@iteracja", iteracja);
+
 
                         SqlDataReader reader = zapytanie.ExecuteReader();
                         try
@@ -214,7 +231,9 @@ namespace Tracktracer
                         zapytanie2.Connection = conn;
                         zapytanie2.Transaction = trans;
                         zapytanie2.CommandType = CommandType.Text;
-                        zapytanie2.CommandText = " DELETE FROM Iteracje_Wymagania WHERE IteracjaId = '" + i_id + "' AND WymaganieId = '" + i + "'";
+                        zapytanie2.CommandText = " DELETE FROM Iteracje_Wymagania WHERE IteracjaId =@i_id AND WymaganieId =@i ";
+                        zapytanie2.Parameters.AddWithValue("@i_id", i_id);
+                        zapytanie2.Parameters.AddWithValue("@i", i);
                         zapytanie2.ExecuteNonQuery();
                     }
                     trans.Commit();

@@ -36,7 +36,8 @@ namespace Tracktracer
             SqlCommand zap = new SqlCommand();
             zap.Connection = conn;
             zap.CommandType = CommandType.Text;
-            zap.CommandText = "SELECT p.metodyka FROM Projekty p WHERE p.id = '" + projekt_id + "';";
+            zap.CommandText = "SELECT p.metodyka FROM Projekty p WHERE p.id =@projekt_id ;";
+            zap.Parameters.AddWithValue("@projekt_id", projekt_id);
 
             string met;
             int redir = 0;
@@ -66,8 +67,10 @@ namespace Tracktracer
 
             if (redir == 1) Server.Transfer("ProjektXP.aspx");
 
-            zap.CommandText = "SELECT p.nazwa, p.opis, p.metodyka, u.imie, u.nazwisko, u.login, p.wlasciciel, p.rewizja, p.svn_url FROM Projekty p, Uzytkownicy_Projekty up, Uzytkownicy u WHERE up.Uzytkownik_id='" + user_id + "' AND p.id = up.Projekt_id AND p.id = '" + projekt_id + "' AND u.id=p.wlasciciel;";
-            
+            zap.CommandText = "SELECT p.nazwa, p.opis, p.metodyka, u.imie, u.nazwisko, u.login, p.wlasciciel, p.rewizja, p.svn_url FROM Projekty p, Uzytkownicy_Projekty up, Uzytkownicy u WHERE up.Uzytkownik_id=@user_id AND p.id = up.Projekt_id AND p.id =@projekt_id AND u.id=p.wlasciciel;";
+            zap.Parameters.AddWithValue("@user_id", user_id);
+            zap.Parameters.AddWithValue("@projekt_id", projekt_id);
+
             SqlDataReader reader;
             reader = zap.ExecuteReader();
             try
@@ -149,7 +152,8 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT aktualne_wydanie FROM Projekty WHERE id='" + projekt_id + "';";
+                zapytanie.CommandText = "SELECT aktualne_wydanie FROM Projekty WHERE id=@projekt_id ;";
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie.Transaction = trans;
 
                 SqlDataReader reader = zapytanie.ExecuteReader();
@@ -161,14 +165,18 @@ namespace Tracktracer
                 SqlCommand zapytanie2 = new SqlCommand();
                 zapytanie2.Connection = conn;
                 zapytanie2.CommandType = CommandType.Text;
-                zapytanie2.CommandText = "INSERT INTO Wydania (nr_wydania, Projekty_id) VALUES ('" + akt_wyd + "', '" + projekt_id + "');";
+                zapytanie2.CommandText = "INSERT INTO Wydania (nr_wydania, Projekty_id) VALUES (@akt_wyd , @projekt_id );";
+                zapytanie2.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie2.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie2.Transaction = trans;
                 zapytanie2.ExecuteNonQuery();
 
                 SqlCommand zapytanie3 = new SqlCommand();
                 zapytanie3.Connection = conn;
                 zapytanie3.CommandType = CommandType.Text;
-                zapytanie3.CommandText = "UPDATE Projekty SET aktualne_wydanie='" + akt_wyd + "' WHERE id='" + projekt_id + "';";
+                zapytanie3.CommandText = "UPDATE Projekty SET aktualne_wydanie=@akt_wyd WHERE id=@projekt_id ;";
+                zapytanie3.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie3.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie3.Transaction = trans;
                 zapytanie3.ExecuteNonQuery();
                 trans.Commit();
@@ -209,7 +217,9 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "UPDATE Wydania SET liczba_iteracji = liczba_iteracji + 1 WHERE nr_wydania = '" + akt_wyd + "' AND Projekty_id = '" + projekt_id + "';";
+                zapytanie.CommandText = "UPDATE Wydania SET liczba_iteracji = liczba_iteracji + 1 WHERE nr_wydania =@akt_wyd AND Projekty_id =@projekt_id ;";
+                zapytanie.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie.Transaction = trans;
                 zapytanie.ExecuteNonQuery();
                 
@@ -217,7 +227,9 @@ namespace Tracktracer
                 SqlCommand zapytanie2 = new SqlCommand();
                 zapytanie2.Connection = conn;
                 zapytanie2.CommandType = CommandType.Text;
-                zapytanie2.CommandText = "SELECT id, liczba_iteracji FROM Wydania WHERE nr_wydania='" + akt_wyd + "' AND Projekty_id='" + projekt_id + "';";
+                zapytanie2.CommandText = "SELECT id, liczba_iteracji FROM Wydania WHERE nr_wydania=@akt_wyd AND Projekty_id=@projekt_id ;";
+                zapytanie2.Parameters.AddWithValue("@akt_wyd", akt_wyd);
+                zapytanie2.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zapytanie2.Transaction = trans;
                 reader = zapytanie2.ExecuteReader();
                 try
@@ -234,7 +246,11 @@ namespace Tracktracer
                 SqlCommand zapytanie3 = new SqlCommand();
                 zapytanie3.Connection = conn;
                 zapytanie3.CommandType = CommandType.Text;
-                zapytanie3.CommandText = "INSERT INTO Iteracje (nr_iteracji, cel_iteracji, Wydania_id) VALUES ('" + l_iteracji + "','" + cel + "', '" + wyd_id + "');";
+                zapytanie3.CommandText = "INSERT INTO Iteracje (nr_iteracji, cel_iteracji, Wydania_id) VALUES (@l_iteracji , @cel , @wyd_id );";
+                zapytanie3.Parameters.AddWithValue("@l_iteracji", l_iteracji);
+                zapytanie3.Parameters.AddWithValue("@cel", cel);
+                zapytanie3.Parameters.AddWithValue("@wyd_id", wyd_id);
+                
                 zapytanie3.Transaction = trans;
                 zapytanie3.ExecuteNonQuery();
                 trans.Commit();
@@ -300,7 +316,11 @@ namespace Tracktracer
                 SqlCommand zapytanie = new SqlCommand();
                 zapytanie.Connection = conn;
                 zapytanie.CommandType = CommandType.Text;
-                zapytanie.CommandText = "SELECT i.cel_iteracji FROM Iteracje i, Wydania w WHERE w.Projekty_id = '" + projekt_id + "' AND w.nr_wydania = '" + wydanie + "' AND i.nr_iteracji ='" + iteracja + "' AND i.Wydania_id=w.id;";
+                zapytanie.CommandText = "SELECT i.cel_iteracji FROM Iteracje i, Wydania w WHERE w.Projekty_id =@projekt_id AND w.nr_wydania =@wydanie AND i.nr_iteracji =@iteracja AND i.Wydania_id=w.id;";
+                zapytanie.Parameters.AddWithValue("@wydanie", wydanie);
+                zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);
+                zapytanie.Parameters.AddWithValue("@iteracja", iteracja);
+                
 
                 SqlDataReader reader;
                 reader = zapytanie.ExecuteReader();
@@ -340,32 +360,58 @@ namespace Tracktracer
                 zap.Connection = conn;
                 zap.Transaction = trans;
                 zap.CommandType = CommandType.Text;
-                zap.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt=NULL, aktywne_wymaganie=NULL, aktywne_zadanie=NULL WHERE aktywny_projekt='" + projekt_id + "' ";
+                zap.CommandText = "UPDATE Uzytkownicy SET aktywny_projekt=NULL, aktywne_wymaganie=NULL, aktywne_zadanie=NULL WHERE aktywny_projekt=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Uzytkownicy_Projekty WHERE Projekt_id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Uzytkownicy_Projekty WHERE Projekt_id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Pliki_wymagania WHERE Wymaganie_id IN (SELECT id FROM Wymagania WHERE Projekty_id='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Pliki_wymagania WHERE Wymaganie_id IN (SELECT id FROM Wymagania WHERE Projekty_id=@projekt_id )";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Historia_plikow WHERE Pliki_id IN (SELECT id FROM Pliki WHERE Projekty_id='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Historia_plikow WHERE Pliki_id IN (SELECT id FROM Pliki WHERE Projekty_id=@projekt_id )";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Pliki WHERE Projekty_id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Pliki WHERE Projekty_id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Wykonanie_przypadku WHERE Przypadek_testowy_id IN (SELECT id FROM Przypadki_testowe WHERE Projekty_id='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Wykonanie_przypadku WHERE Przypadek_testowy_id IN (SELECT id FROM Przypadki_testowe WHERE Projekty_id=@projekt_id)";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Przypadki_testowe WHERE Projekty_id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Przypadki_testowe WHERE Projekty_id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Powiazane_wymagania WHERE Wymaganie1_id IN (SELECT id FROM Wymagania WHERE Projekty_id='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Powiazane_wymagania WHERE Wymaganie1_id IN (SELECT id FROM Wymagania WHERE Projekty_id=@projekt_id )";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Wersje_wymagan WHERE Wymaganie_id IN (SELECT id FROM Wymagania WHERE Projekty_id ='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Wersje_wymagan WHERE Wymaganie_id IN (SELECT id FROM Wymagania WHERE Projekty_id =@projekt_id )";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Wymagania WHERE Projekty_id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Wymagania WHERE Projekty_id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();                
-                zap.CommandText = "DELETE FROM Iteracje WHERE Wydania_id IN (SELECT id FROM Wydania WHERE Projekty_id='" + projekt_id + "')";
+
+                zap.CommandText = "DELETE FROM Iteracje WHERE Wydania_id IN (SELECT id FROM Wydania WHERE Projekty_id=@projekt_id )";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Wydania WHERE Projekty_id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Wydania WHERE Projekty_id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
-                zap.CommandText = "DELETE FROM Projekty WHERE id='" + projekt_id + "'";
+
+                zap.CommandText = "DELETE FROM Projekty WHERE id=@projekt_id ";
+                zap.Parameters.AddWithValue("@projekt_id", projekt_id);
                 zap.ExecuteNonQuery();
+
                 trans.Commit();                
             }
             catch

@@ -289,7 +289,7 @@ namespace Tracktracer
                                 fo.old_path.Trim();
                                 sql = "UPDATE Pliki SET nazwa =@foname , sciezka=@fopath WHERE sciezka=@foold_path AND Projekty_id =@projekt_id ;";
                                 
-                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, stara_sciezka, Pliki_id) SELECT 'Zmodyfikowano', @fo.rew , @foold_path , p.id FROM Pliki p WHERE p.Projekty_id =@projekt_id AND p.sciezka =@fopath ;";
+                                sql2 = "INSERT INTO Historia_plikow (rodzaj_modyfikacji, nr_rewizji, stara_sciezka, Pliki_id) SELECT 'Zmodyfikowano', @forew , @foold_path , p.id FROM Pliki p WHERE p.Projekty_id =@projekt_id AND p.sciezka =@fopath ;";
                             }
                             else
                             {
@@ -321,7 +321,7 @@ namespace Tracktracer
                         if (string.IsNullOrEmpty(sql2) == false)
                         {
                             zapytanie.CommandText = sql2;
-                            zapytanie.Parameters.AddWithValue("@foname", fo.rew);
+                            zapytanie.Parameters.AddWithValue("@forew", fo.rew);
                             zapytanie.Parameters.AddWithValue("@fopath", fo.path);
                             zapytanie.Parameters.AddWithValue("@foold_path", fo.old_path);
                             zapytanie.Parameters.AddWithValue("@projekt_id", projekt_id);

@@ -54,7 +54,8 @@ namespace Tracktracer
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
-            zapytanie.CommandText = "SELECT wyk.wynik, wyk.data, wyk.komentarz, u.imie, u.nazwisko, u.login FROM Wykonanie_przypadku wyk, Uzytkownicy u WHERE wyk.id='"+wykonanie_id+"' AND u.id = wyk.Uzytkownik_id";
+            zapytanie.CommandText = "SELECT wyk.wynik, wyk.data, wyk.komentarz, u.imie, u.nazwisko, u.login FROM Wykonanie_przypadku wyk, Uzytkownicy u WHERE wyk.id=@wykonanie_id AND u.id = wyk.Uzytkownik_id";
+            zapytanie.Parameters.AddWithValue("@wykonanie_id", wykonanie_id);
             SqlDataReader reader = zapytanie.ExecuteReader();
             try
             {

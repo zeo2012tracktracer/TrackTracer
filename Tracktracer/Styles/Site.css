@@ -349,3 +349,9 @@ div.accountInfo
         {            
                                                 
         }
+        
+        
+/* validation error*/
+.error {
+    color: red;
+}

@@ -15,22 +15,31 @@ namespace Tracktracer
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            conn = new SqlConnection();
+            
         }
-
+        
         protected void Button1_Click(object sender, EventArgs e)
         {
             Server.Transfer("Index.aspx");
         }
         protected void Button2_Click(object sender, EventArgs e)
         {
+            conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=.\SQLSERVER;Initial Catalog=tracktracer; User ID=tracktracer; Integrated Security=True";
-            conn.Open();
-            string login = login_TextBox.Text;
+            
+
             string haslo = haslo_TextBox.Text;
             string imie = Imie_TextBox.Text;
             string nazwisko = Nazwisko_TextBox.Text;
+            string login = login_TextBox.Text;
 
+            if (login.Length == 0)
+            {
+                RequiredFieldValidator1.ErrorMessage = "Musisz podać login.";
+                RequiredFieldValidator1.IsValid = false;
+            }
+
+            conn.Open();
             SqlCommand zapytanie = new SqlCommand();
             zapytanie.Connection = conn;
             zapytanie.CommandType = CommandType.Text;
@@ -43,7 +52,8 @@ namespace Tracktracer
             }
             catch (SqlException ex)
             {
-                nowyUzytkownik_Label.Text = ex.Message;
+                RequiredFieldValidator1.ErrorMessage = "User istnieje";
+                RequiredFieldValidator1.IsValid = false;
             }
             finally
             {

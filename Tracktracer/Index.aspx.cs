@@ -32,8 +32,8 @@ namespace Tracktracer
         protected void zaloguj(String login, String haslo)
         {
             SqlConnection conn = new SqlConnection();
-            //conn.ConnectionString = "Data Source=.;Initial Catalog=tracktracer;User ID=user1;Password=zeo2012;Integrated Security=True";
-            conn.ConnectionString = "Data Source=NOTYOURBUSINES;Initial Catalog=tracktracer;Integrated Security=True";
+            //conn.ConnectionString = "Data Source=.\\SQLSERVER;Initial Catalog=tracktracer;User ID=user1;Password=zeo2012;Integrated Security=True";
+            conn.ConnectionString = "Data Source=.\\SQLSERVER;Initial Catalog=tracktracer;Integrated Security=True";
             conn.Open();
 
             SqlCommand zapytanie = new SqlCommand();
@@ -65,6 +65,7 @@ namespace Tracktracer
                 reader.Close();
                 Server.Transfer("Default.aspx");
             } else {
+                RequiredFieldValidator1.IsValid = false;
                 reader.Close();
                 conn.Close();
             }            
@@ -72,7 +73,7 @@ namespace Tracktracer
 
         protected void ButtonRegister_Click(object sender, EventArgs e)
         {
-
+            Server.Transfer("Rejestruj.aspx");
         }
     }
 }

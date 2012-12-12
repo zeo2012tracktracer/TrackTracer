@@ -51,7 +51,7 @@ namespace Tracktracer
                               
                 Session["user_id"] = user_id;
                 Session["connection"] = conn;
-
+                Session["user_login"] = login;
                 if (!reader.IsDBNull(1))
                 {
                     int aktywny_projekt = (int)reader.GetSqlInt32(1);

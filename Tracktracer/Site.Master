@@ -18,6 +18,9 @@
                 </a>
             </div>
             <div class="loginDisplay">
+                <asp:Label ID="Label2" runat="server" Text="Zalogowany jako "></asp:Label>
+                <asp:Label ID="Label1" runat="server" Font-Bold="True"></asp:Label>
+                <asp:LinkButton ID="LinkButton2" runat="server" onclick="LinkButton1_Click">Wyloguj</asp:LinkButton>
                 <asp:LinkButton ID="LinkButton1" runat="server" onclick="LinkButton1_Click">Wyloguj</asp:LinkButton>
             </div>
             <div class="clear hideSkiplink">

@@ -14,6 +14,7 @@ namespace Tracktracer
         {            
             try
             {
+                Label1.Text = (string)Session["user_login"];
                 aktywny_projekt = (int)Session["aktywny_projekt"];
             }
             catch { }
